@@ -1,7 +1,7 @@
 const CopyPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+const { VuetifyPlugin } = require('webpack-plugin-vuetify');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -164,7 +164,10 @@ module.exports = {
   },
   plugins: [
     new DefinePlugin({
-      'process.env.CC_API_VERSION': JSON.stringify(apiVersion)
+      'process.env.CC_API_VERSION': JSON.stringify(apiVersion),
+      '__VUE_OPTIONS_API__': 'true',
+      '__VUE_PROD_DEVTOOLS__': 'false',
+      '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': 'false'
     }),
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
@@ -174,7 +177,7 @@ module.exports = {
       overrideConfigFile: './.eslintrc.js'
     }),
     new VueLoaderPlugin(),
-    new VuetifyLoaderPlugin(),
+    new VuetifyPlugin(),
     new HTMLWebpackPlugin({
       showErrors: true,
       cache: true,
