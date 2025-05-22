@@ -1,4 +1,3 @@
-import Vue from "vue";
 import {
   TBufferedTransport,
   TJSONProtocol,
@@ -19,7 +18,36 @@ const port = parseInt(process.env.CC_SERVER_PORT, 10) ||
   parseInt(window.location.port, 10);
 const api = process.env.CC_API_VERSION;
 
-const eventHub = new Vue();
+// Simple event emitter to replace Vue-based event bus
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+
+  $on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+  }
+
+  $emit(event, ...args) {
+    if (this.events[event]) {
+      this.events[event].forEach(callback => callback(...args));
+    }
+  }
+
+  $off(event, callback) {
+    if (this.events[event]) {
+      const index = this.events[event].indexOf(callback);
+      if (index > -1) {
+        this.events[event].splice(index, 1);
+      }
+    }
+  }
+}
+
+const eventHub = new EventEmitter();
 
 class BaseService {
   constructor(serviceName, serviceClass) {
@@ -97,7 +125,7 @@ const handleThriftError = function (cb, onError) {
 
         router.push({
           name: "login",
-          query: { "return_to": router.currentRoute.fullPath }
+          query: { "return_to": router.currentRoute.value.fullPath }
         }).catch(() => { });
 
         if (onError) onError(err);
