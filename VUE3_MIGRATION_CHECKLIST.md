@@ -11,14 +11,14 @@
 - [x] `web/server/vue-cli/src/plugins/vuetify.js` - Update to Vuetify 3 syntax
 
 ## Build Configuration
-- [ ] `web/server/vue-cli/config/webpack.common.js` - Update loaders for Vue 3
-- [ ] `web/server/vue-cli/config/webpack.dev.js` - Update dev server config
-- [ ] `web/server/vue-cli/config/webpack.prod.js` - Update production config
-- [ ] `web/server/vue-cli/config/helpers.js` - Build helper functions
-- [ ] `web/server/vue-cli/.eslintrc.js` - Update ESLint rules for Vue 3
-- [ ] `web/server/vue-cli/.babelrc` - Update Babel config if needed
-- [ ] `web/server/vue-cli/jest` config in package.json - Update test transform
-- [ ] `web/server/vue-cli/nightwatch.conf.js` - E2E test configuration
+- [x] `web/server/vue-cli/config/webpack.common.js` - Update loaders for Vue 3
+- [x] `web/server/vue-cli/config/webpack.dev.js` - Update dev server config
+- [x] `web/server/vue-cli/config/webpack.prod.js` - Update production config
+- [x] `web/server/vue-cli/config/helpers.js` - Build helper functions
+- [x] `web/server/vue-cli/.eslintrc.js` - Update ESLint rules for Vue 3
+- [x] `web/server/vue-cli/.babelrc` - Update Babel config if needed
+- [x] `web/server/vue-cli/jest` config in package.json - Update test transform
+- [x] `web/server/vue-cli/nightwatch.conf.js` - E2E test configuration
 
 ## Event Bus Files (Priority 2)
 ### Files creating event buses with `new Vue()`
