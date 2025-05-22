@@ -1,5 +1,8 @@
 # Vue 2 to Vue 3 Migration Checklist
 
+## Instructions for Agents
+**IMPORTANT**: When working on this migration, you MUST update this checklist as you complete tasks. Change `- [ ]` to `- [x]` for each completed item. This ensures proper progress tracking and prevents duplicate work.
+
 ## Core Files (Priority 1)
 - [ ] `web/server/vue-cli/package.json` - Update all Vue ecosystem dependencies
 - [ ] `web/server/vue-cli/src/main.js` - Replace `new Vue()` with `createApp()`
