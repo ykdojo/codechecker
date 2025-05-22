@@ -1,11 +1,11 @@
-import fromUnixTime from "./from-unix-time";
-import prettifyDate from "./prettify-date";
-import truncate from "./truncate";
+// Vue 3 Migration: Filters are removed in Vue 3
+// These functions have been moved to src/utils/filters.js
+// Components should import and use them as regular functions or computed properties
 
-export default {
-  install(Vue) {
-    Vue.filter("fromUnixTime", fromUnixTime);
-    Vue.filter("prettifyDate", prettifyDate);
-    Vue.filter("truncate", truncate);
-  }
+import { fromUnixTime, prettifyDate, truncate } from "@/utils/filters";
+
+export {
+  fromUnixTime,
+  prettifyDate,
+  truncate
 };
