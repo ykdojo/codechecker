@@ -4,11 +4,11 @@
 **IMPORTANT**: When working on this migration, you MUST update this checklist as you complete tasks. Change `- [ ]` to `- [x]` for each completed item. This ensures proper progress tracking and prevents duplicate work.
 
 ## Core Files (Priority 1)
-- [ ] `web/server/vue-cli/package.json` - Update all Vue ecosystem dependencies
-- [ ] `web/server/vue-cli/src/main.js` - Replace `new Vue()` with `createApp()`
-- [ ] `web/server/vue-cli/src/router/index.js` - Update to Vue Router 4 syntax
-- [ ] `web/server/vue-cli/src/store/index.js` - Update to Vuex 4 or migrate to Pinia
-- [ ] `web/server/vue-cli/src/plugins/vuetify.js` - Update to Vuetify 3 syntax
+- [x] `web/server/vue-cli/package.json` - Update all Vue ecosystem dependencies
+- [x] `web/server/vue-cli/src/main.js` - Replace `new Vue()` with `createApp()`
+- [x] `web/server/vue-cli/src/router/index.js` - Update to Vue Router 4 syntax
+- [x] `web/server/vue-cli/src/store/index.js` - Update to Vuex 4 or migrate to Pinia
+- [x] `web/server/vue-cli/src/plugins/vuetify.js` - Update to Vuetify 3 syntax
 
 ## Build Configuration
 - [ ] `web/server/vue-cli/config/webpack.common.js` - Update loaders for Vue 3
