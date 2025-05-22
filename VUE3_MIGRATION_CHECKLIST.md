@@ -244,26 +244,8 @@
 - [ ] `web/server/vue-cli/src/router/__tests__/backward-compatible-url.test.js`
 - [ ] `web/server/vue-cli/src/mixins/__tests__/str-to-color.mixin.test.js`
 
-### E2E Tests
-- [ ] `web/server/vue-cli/e2e/init.db.js`
-- [ ] `web/server/vue-cli/e2e/init.workspace.js`
-- [ ] `web/server/vue-cli/e2e/init.reports.js`
-- [ ] `web/server/vue-cli/e2e/pages/product.js`
-- [ ] `web/server/vue-cli/e2e/pages/report.js`
-- [ ] `web/server/vue-cli/e2e/pages/login.js`
-- [ ] `web/server/vue-cli/e2e/pages/reviewStatusRule.js`
-- [ ] `web/server/vue-cli/e2e/pages/runs.js`
-- [ ] `web/server/vue-cli/e2e/pages/header.js`
-- [ ] `web/server/vue-cli/e2e/pages/reportDetail.js`
-- [ ] `web/server/vue-cli/e2e/specs/reports.js`
-- [ ] `web/server/vue-cli/e2e/specs/login.js`
-- [ ] `web/server/vue-cli/e2e/specs/reviewStatusRule.js`
-- [ ] `web/server/vue-cli/e2e/specs/runs.js`
-- [ ] `web/server/vue-cli/e2e/specs/products.js`
-- [ ] `web/server/vue-cli/e2e/specs/reportDetail.js`
-- [ ] `web/server/vue-cli/e2e/commands/getTableRows.js`
-- [ ] `web/server/vue-cli/e2e/commands/setCheckboxValue.js`
-- [ ] `web/server/vue-cli/e2e/commands/clearAndSetValue.js`
+### E2E Tests (Only if CSS selectors change)
+- [ ] Review E2E tests after Vuetify 3 migration - may need selector updates
 
 ## Mixins (15 files)
 - [ ] `web/server/vue-cli/src/mixins/severity.mixin.js`
@@ -304,56 +286,20 @@
 - [ ] `web/server/vue-cli/src/directives/index.js`
 - [ ] `web/server/vue-cli/src/directives/FillHeightDirective.js`
 
-## Services (6 files)
-- [ ] `web/server/vue-cli/src/services/api/server-info.service.js`
-- [ ] `web/server/vue-cli/src/services/api/product.service.js`
-- [ ] `web/server/vue-cli/src/services/api/cc.service.js`
-- [ ] `web/server/vue-cli/src/services/api/config.service.js`
-- [ ] `web/server/vue-cli/src/services/api/index.js`
-- [ ] `web/server/vue-cli/src/services/api/auth.service.js`
+## Services (Only 1 file with Vue dependency)
+- [ ] `web/server/vue-cli/src/services/api/_base.service.js` - Already listed above in event bus section
 
 ## Other Files
 - [ ] `web/server/vue-cli/src/components/Report/Git/GitBlame.js` - Convert to composition API
-- [ ] `web/server/vue-cli/src/static.js`
-- [ ] `web/server/vue-cli/src/browsersupport.js`
-- [ ] `web/server/vue-cli/src/router/backward-compatible-url.js`
-- [ ] `web/server/vue-cli/src/store/actions.type.js`
-- [ ] `web/server/vue-cli/src/store/mutations.type.js`
 - [ ] `web/server/vue-cli/src/variables.scss` - Update Vuetify imports
+- [ ] Review other JS files only if they import Vue or use Vue APIs
 
-## Index Files (Component Registration)
-- [ ] `web/server/vue-cli/src/mixins/index.js`
-- [ ] `web/server/vue-cli/src/components/index.js`
-- [ ] `web/server/vue-cli/src/components/Statistics/index.js`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/index.js`
-- [ ] `web/server/vue-cli/src/components/Product/index.js`
-- [ ] `web/server/vue-cli/src/components/Layout/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportInfo/index.js`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/index.js`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/index.js`
-- [ ] `web/server/vue-cli/src/components/NewFeatures/index.js`
-- [ ] `web/server/vue-cli/src/components/Icons/index.js`
-- [ ] `web/server/vue-cli/src/components/Run/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/index.js`
-- [ ] `web/server/vue-cli/src/components/AnalysisInfo/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/index.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/index.js`
-- [ ] `web/server/vue-cli/src/mixins/api/index.js`
+## Index Files (Simple exports - likely no changes needed)
+- [ ] Review index.js files only if imports/exports change
 
-## Utility Files
-- [ ] `web/server/vue-cli/src/components/Statistics/StatisticsHelper.js`
-- [ ] `web/server/vue-cli/src/components/Statistics/DefaultStatisticsFilterValues.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/DefaultReportFilterValues.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionDateFilterItems.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportStepIconType.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeKind.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportDetailFormatter.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeRootItem.js`
+## Utility Files (Only 1 needs changes)
+- [ ] `web/server/vue-cli/src/components/Statistics/DefaultStatisticsFilterValues.js` - Uses mixin, needs update
+- [ ] Review other utility files only if they import Vue or mixins
 
 ## Migration Notes
 
