@@ -62,7 +62,8 @@ module.exports = {
       '@cc/report-server-types': join('codechecker-api', 'lib', 'report_server_types.js'),
       '@cc/shared-types': join('codechecker-api', 'lib', 'codechecker_api_shared_types.js'),
       'thrift': join('thrift', 'lib', 'nodejs', 'lib', 'thrift', 'browser.js'),
-      'Vuetify': join('vuetify', 'lib', 'components')
+      'Vuetify': join('vuetify', 'lib', 'components'),
+      'vue': '@vue/runtime-dom'
     }
   },
   module: {
@@ -82,7 +83,12 @@ module.exports = {
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
+        options: {
+          compilerOptions: {
+            isCustomElement: tag => tag.startsWith('v-')
+          }
+        }
       },
       {
         test: /\.css$/,

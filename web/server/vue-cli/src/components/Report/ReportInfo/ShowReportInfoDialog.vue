@@ -43,7 +43,9 @@
 <script>
 import ReportInfo from "./ReportInfo";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ShowReportInfoDialog",
   components: { ReportInfo },
   props: {

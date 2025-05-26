@@ -5,34 +5,29 @@
     scrollable
     @confirm="saveReviewStatusRule"
   >
-    <template v-slot:title>
-      <span
-        v-if="rule"
-      >
+    <template #title>
+      <span v-if="rule">
         Edit review status rule
       </span>
-      <span
-        v-else
-      >
+      <span v-else>
         New review status rule
       </span>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <v-form ref="form">
         <v-text-field
-          v-model.trim="reportHash"
+          v-model="form.reportHash"
           class="report-hash mb-2"
           label="Report hash*"
           autofocus
-          outlined
+          variant="outlined"
           required
-          :hide-details="true"
           :rules="rules.reportHash"
         />
 
         <select-review-status
-          v-model="status"
+          v-model="form.status"
           class="mb-2"
           label="Select review status*"
           :clearable="false"
@@ -40,14 +35,11 @@
         />
 
         <v-textarea
-          v-model.trim="message"
+          v-model="form.message"
           class="message pa-0"
-          solo
-          flat
-          outlined
+          variant="outlined"
           name="reviewStatusMessage"
           label="(Optionally) Explain the status change..."
-          :hide-details="true"
         />
       </v-form>
     </template>
@@ -55,62 +47,70 @@
 </template>
 
 <script>
+import { ref, computed, defineComponent, reactive, watch } from 'vue';
 import { ccService, handleThriftError } from "@cc-api";
-
 import { ConfirmDialog } from "@/components";
 import SelectReviewStatus from "./SelectReviewStatus";
 
-export default {
+export default defineComponent({
   name: "EditReviewStatusRuleDialog",
   components: { ConfirmDialog, SelectReviewStatus },
   props: {
-    value: { type: Boolean, default: false },
+    modelValue: { type: Boolean, default: false },
     rule: { type: Object, default: () => null },
   },
-  data() {
-    return {
+  emits: ['update:model-value', 'on:confirm'],
+  setup(props, { emit }) {
+    const form = ref(null);
+    const formData = reactive({
       reportHash: null,
       status: null,
-      message: null,
-      rules: {
-        reportHash: [ v => !!v || "Report hash is required" ],
-        selectReviewStatus: [ v => !!v || "Review status is required" ],
-      }
+      message: null
+    });
+
+    const rules = {
+      reportHash: [ v => !!v || "Report hash is required" ],
+      selectReviewStatus: [ v => !!v || "Review status is required" ],
     };
-  },
-  computed: {
-    dialog: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit("update:value", val);
+
+    const dialog = computed({
+      get: () => props.modelValue,
+      set: (val) => emit('update:model-value', val)
+    });
+
+    watch(() => props.rule, (newRule) => {
+      formData.reportHash = newRule?.reportHash;
+      formData.status = newRule?.status;
+      formData.message = newRule?.message;
+    });
+
+    watch(dialog, (val) => {
+      if (val) {
+        form.value?.resetValidation();
       }
-    }
-  },
-  watch: {
-    dialog() {
-      if (this.dialog) {
-        this.$refs.form?.resetValidation();
-      }
-    },
-    rule() {
-      this.reportHash = this.rule?.reportHash;
-      this.status = this.rule?.status;
-      this.message = this.rule?.message;
-    }
-  },
-  methods: {
-    async saveReviewStatusRule() {
-      if (!this.$refs.form.validate()) return;
+    });
+
+    const saveReviewStatusRule = async () => {
+      if (!form.value?.validate()) return;
 
       ccService.getClient().addReviewStatusRule(
-        this.reportHash, this.status, this.message,
+        formData.reportHash,
+        formData.status,
+        formData.message,
         handleThriftError(async () => {
-          this.$emit("on:confirm");
-          this.dialog = false;
-        }));
-    }
+          emit('on:confirm');
+          dialog.value = false;
+        })
+      );
+    };
+
+    return {
+      form,
+      formData,
+      dialog,
+      rules,
+      saveReviewStatusRule
+    };
   }
-};
+});
 </script>

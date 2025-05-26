@@ -1,4 +1,4 @@
-import truncate from "@/filters/truncate";
+import { truncate } from "@/utils/filters";
 
 describe("truncate.js", () => {
   test("no truncate", () => {

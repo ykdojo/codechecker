@@ -64,7 +64,9 @@
 <script>
 import ReportStepIconType from "./ReportStepIconType";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportTreeIcon",
   props: {
     value: {

@@ -1,218 +1,215 @@
-<script>
+<script setup>
+import { ref, computed, onMounted, onActivated, watch } from 'vue';
 import _ from "lodash";
 import {
   endOfMonth, endOfToday, endOfWeek, endOfYear, format, subDays, subMonths,
   subWeeks, subYears
 } from "date-fns";
-import { Line, mixins } from "vue-chartjs";
+import { Line } from 'vue-chartjs';
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
 import { ccService, handleThriftError } from "@cc-api";
 import { ReportFilter, Severity } from "@cc/report-server-types";
-import { DateMixin, SeverityMixin } from "@/mixins";
+import { useDateMixin, useSeverityMixin } from "@/mixins";
 
-const { reactiveData } = mixins;
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartDataLabels
+);
 
-export default {
-  name: "OutstandingReportsChart",
-  extends: Line,
-  mixins: [ DateMixin, reactiveData, SeverityMixin ],
-  props: {
-    bus: { type: Object, required: true },
-    getStatisticsFilters: { type: Function, required: true },
-    interval: { type: String, required: true },
-    resolution: { type: String, required: true },
-  },
-  data() {
-    return {
-      dates: [],
-      options: {
-        legend: {
-          display: true,
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        tooltips: {
-          mode: "index",
-          callbacks: {
-            footer: function (tooltipItems, data) {
-              const total = tooltipItems.reduce((acc, curr) => {
-                return acc + data.datasets[curr.datasetIndex].data[curr.index];
-              }, 0);
+const props = defineProps({
+  bus: { type: Object, required: true },
+  getStatisticsFilters: { type: Function, required: true },
+  interval: { type: String, required: true },
+  resolution: { type: String, required: true },
+});
 
-              return `Total: ${total}`;
-            },
-          },
-          intersect: false
+const dates = ref([]);
+const { getUnixTime } = useDateMixin();
+const { severityFromCodeToColor, severityFromCodeToString } = useSeverityMixin();
+
+const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+    },
+    tooltip: {
+      mode: "index",
+      callbacks: {
+        footer: function (tooltipItems) {
+          const total = tooltipItems.reduce((acc, curr) => {
+            return acc + curr.dataset.data[curr.dataIndex];
+          }, 0);
+          return `Total: ${total}`;
         },
-        hover: {
-          mode: "nearest",
-          intersect: true
-        },
-        scales: {
-          xAxes: [
-            {
-              ticks: {
-                padding: 10
-              }
-            }
-          ]
-        }
       },
-      chartData: {
-        labels: [],
-        datasets: [
-          ...Object.keys(Severity).reverse().map(s => {
-            const severityId = Severity[s];
-            const color = this.severityFromCodeToColor(severityId);
-
-            return {
-              type: "line",
-              label: this.severityFromCodeToString(severityId),
-              backgroundColor: color,
-              borderColor: color,
-              borderWidth: 3,
-              fill: false,
-              pointRadius: 5,
-              pointHoverRadius: 10,
-              datalabels: {
-                backgroundColor: color,
-                color: "white",
-                borderRadius: 4,
-                font: {
-                  weight: "bold"
-                },
-              },
-              data: []
-            };
-          })
-        ]
-      }
-    };
-  },
-
-  watch: {
-    interval: {
-      handler: _.debounce(function () {
-        const oldSize = this.dates.length;
-        const newSize = parseInt(this.interval);
-
-        this.setChartData();
-
-        if (newSize > oldSize) {
-          const dates = this.dates.slice(oldSize);
-          this.fetchData(dates);
-        }
-      }, 500)
+      intersect: false
     },
-    resolution() {
-      this.setChartData();
-      this.fetchData(this.dates);
-    }
   },
-
-  created() {
-    this.setChartData();
+  interaction: {
+    mode: "nearest",
+    intersect: true
   },
-
-  mounted() {
-    this.addPlugin(ChartDataLabels);
-
-    // Initialize the chart.
-    this.renderChart(this.chartData, this.options);
-  },
-
-  activated() {
-    this.bus.$on("refresh", () => this.fetchData(this.dates));
-  },
-
-  methods: {
-    setChartData() {
-      const interval = parseInt(this.interval);
-      if (isNaN(interval) || interval <=0)
-        return;
-
-      let dateFormat = "yyyy. MMM. dd";
-
-      if (this.resolution === "days") {
-        const today = endOfToday();
-        this.dates = [ ...new Array(interval).keys() ].map(i =>
-          subDays(today, i));
+  scales: {
+    x: {
+      ticks: {
+        padding: 10
       }
-      else if (this.resolution === "weeks") {
-        const endOfCurrentWeek = endOfWeek(new Date(), { weekStartsOn: 1 });
-        this.dates = [ ...new Array(interval).keys() ].map(i =>
-          subWeeks(endOfCurrentWeek, i));
-      }
-      else if (this.resolution === "months") {
-        const endOfCurrentMonth = endOfMonth(new Date());
-        this.dates = [ ...new Array(interval).keys() ].map(i =>
-          subMonths(endOfCurrentMonth, i));
-
-        dateFormat = "yyyy. MMM";
-      }
-      else if (this.resolution === "years") {
-        const endOfCurrentYear = endOfYear(new Date());
-        this.dates = [ ...new Array(interval).keys() ].map(i =>
-          subYears(endOfCurrentYear, i));
-
-        dateFormat = "yyyy";
-      }
-
-      this.chartData.labels = [ ...this.dates ].reverse().map((d, idx) => {
-        const date = format(d, dateFormat);
-        if (idx === this.dates.length - 1)
-          return `${date} (Current)`;
-        return date;
-      });
-
-      this.chartData.datasets.forEach(d => {
-        if (this.dates.length > d.data.length) {
-          d.data = [
-            ...new Array(this.dates.length - d.data.length).fill(null),
-            ...d.data
-          ];
-        } else {
-          d.data = d.data.slice(d.data.length - this.dates.length,
-            d.data.length);
-        }
-      });
-
-      this.chartData = { ...this.chartData };
-    },
-    fetchData(datesToUpdate) {
-      this.dates.forEach(async (d, idx) => {
-        if (!datesToUpdate.includes(d)) return;
-
-        const reportCount = await this.fetchOutstandingReports(d);
-        const datasets = this.chartData.datasets;
-
-        Object.keys(Severity).reverse().forEach((s, i) => {
-          const severityId = Severity[s];
-          const numOfReports = reportCount[severityId]?.toNumber() || 0;
-
-          const data = datasets[i].data;
-          data[data.length - 1 - idx] = numOfReports;
-        });
-
-        this.chartData = { ...this.chartData };
-      });
-    },
-
-    fetchOutstandingReports(date) {
-      const { runIds, reportFilter } = this.getStatisticsFilters();
-
-      const rFilter = new ReportFilter(reportFilter);
-      rFilter.openReportsDate = this.getUnixTime(date);
-      rFilter.detectionStatus = null;
-
-      const cmpData = null;
-
-      return new Promise(resolve => {
-        ccService.getClient().getSeverityCounts(runIds, rFilter, cmpData,
-          handleThriftError(res => resolve(res)));
-      });
     }
   }
 };
+
+const chartData = ref({
+  labels: [],
+  datasets: Object.keys(Severity).reverse().map(s => {
+    const severityId = Severity[s];
+    const color = severityFromCodeToColor(severityId);
+
+    return {
+      type: "line",
+      label: severityFromCodeToString(severityId),
+      backgroundColor: color,
+      borderColor: color,
+      borderWidth: 3,
+      fill: false,
+      pointRadius: 5,
+      pointHoverRadius: 10,
+      datalabels: {
+        backgroundColor: color,
+        color: "white",
+        borderRadius: 4,
+        font: {
+          weight: "bold"
+        },
+      },
+      data: []
+    };
+  })
+});
+
+const setChartData = () => {
+  const intervalNum = parseInt(props.interval);
+  if (isNaN(intervalNum) || intervalNum <= 0)
+    return;
+
+  let dateFormat = "yyyy. MMM. dd";
+
+  if (props.resolution === "days") {
+    const today = endOfToday();
+    dates.value = [...new Array(intervalNum).keys()].map(i =>
+      subDays(today, i));
+  }
+  else if (props.resolution === "weeks") {
+    const endOfCurrentWeek = endOfWeek(new Date(), { weekStartsOn: 1 });
+    dates.value = [...new Array(intervalNum).keys()].map(i =>
+      subWeeks(endOfCurrentWeek, i));
+  }
+  else if (props.resolution === "months") {
+    const endOfCurrentMonth = endOfMonth(new Date());
+    dates.value = [...new Array(intervalNum).keys()].map(i =>
+      subMonths(endOfCurrentMonth, i));
+    dateFormat = "yyyy. MMM";
+  }
+  else if (props.resolution === "years") {
+    const endOfCurrentYear = endOfYear(new Date());
+    dates.value = [...new Array(intervalNum).keys()].map(i =>
+      subYears(endOfCurrentYear, i));
+    dateFormat = "yyyy";
+  }
+
+  chartData.value.labels = [...dates.value].reverse().map((d, idx) => {
+    const date = format(d, dateFormat);
+    if (idx === dates.value.length - 1)
+      return `${date} (Current)`;
+    return date;
+  });
+
+  chartData.value.datasets.forEach(d => {
+    if (dates.value.length > d.data.length) {
+      d.data = [
+        ...new Array(dates.value.length - d.data.length).fill(null),
+        ...d.data
+      ];
+    } else {
+      d.data = d.data.slice(d.data.length - dates.value.length,
+        d.data.length);
+    }
+  });
+
+  chartData.value = { ...chartData.value };
+};
+
+const fetchOutstandingReports = async (date) => {
+  const { runIds, reportFilter } = props.getStatisticsFilters();
+
+  const rFilter = new ReportFilter(reportFilter);
+  rFilter.openReportsDate = getUnixTime(date);
+  rFilter.detectionStatus = null;
+
+  const cmpData = null;
+
+  return new Promise(resolve => {
+    ccService.getClient().getSeverityCounts(runIds, rFilter, cmpData,
+      handleThriftError(res => resolve(res)));
+  });
+};
+
+const fetchData = async (datesToUpdate) => {
+  dates.value.forEach(async (d, idx) => {
+    if (!datesToUpdate.includes(d)) return;
+
+    const reportCount = await fetchOutstandingReports(d);
+    const datasets = chartData.value.datasets;
+
+    Object.keys(Severity).reverse().forEach((s, i) => {
+      const severityId = Severity[s];
+      const numOfReports = reportCount[severityId]?.toNumber() || 0;
+
+      const data = datasets[i].data;
+      data[data.length - 1 - idx] = numOfReports;
+    });
+
+    chartData.value = { ...chartData.value };
+  });
+};
+
+watch(() => props.interval, 
+  _.debounce(() => {
+    const oldSize = dates.value.length;
+    const newSize = parseInt(props.interval);
+
+    setChartData();
+
+    if (newSize > oldSize) {
+      const newDates = dates.value.slice(oldSize);
+      fetchData(newDates);
+    }
+  }, 500)
+);
+
+watch(() => props.resolution, () => {
+  setChartData();
+  fetchData(dates.value);
+});
+
+onMounted(() => {
+  setChartData();
+});
+
+onActivated(() => {
+  props.bus.$on("refresh", () => fetchData(dates.value));
+});
 </script>
+
+<template>
+  <Line :data="chartData" :options="options" />
+</template>

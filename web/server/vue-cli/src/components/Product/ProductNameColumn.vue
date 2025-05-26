@@ -3,21 +3,21 @@
     class="pa-0"
     two-line
   >
-    <v-list-item-avatar class="my-1">
+    <template #prepend>
       <v-avatar
         :color="strToColor(product.endpoint)"
-        size="48"
+        :size="48"
         class="my-1"
       >
-        <span class="white--text headline">
-          {{ product.endpoint | productIconName }}
+        <span class="text-white text-h5">
+          {{ productIconName(product.endpoint) }}
         </span>
       </v-avatar>
-    </v-list-item-avatar>
+    </template>
 
     <v-list-item-content>
       <v-list-item-title>
-        <confidentiality-icon :value="product.confidentiality" small />
+        <confidentiality-icon :value="product.confidentiality" density="compact" />
 
         <span
           v-if="product.databaseStatus !== DBStatus.OK || !product.accessible"
@@ -35,7 +35,7 @@
 
         <span
           v-if="!product.accessible"
-          color="grey--text"
+          class="text-grey"
         >
           <v-icon>mdi-alert-outline</v-icon>
           You do not have access to this product!
@@ -43,7 +43,7 @@
 
         <span
           v-else-if="product.databaseStatus !== DBStatus.OK"
-          class="error--text"
+          class="text-error"
         >
           <v-icon>mdi-alert-outline</v-icon>
           {{ dbStatusFromCodeToString(product.databaseStatus) }}
@@ -76,8 +76,8 @@
             }"
             :title="link.title"
             :color="link.color"
-            x-small
-            text
+            size="x-small"
+            variant="text"
             icon
           >
             <v-icon>{{ link.icon }}</v-icon>
@@ -96,28 +96,28 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 import { DBStatus } from "@cc/shared-types";
 import { StrToColorMixin } from "@/mixins";
 import { ConfidentialityIcon } from "@/components/Icons";
 import { defaultReportFilterValues } from "@/components/Report/ReportFilter";
 
-export default {
+export default defineComponent({
   name: "ProductNameColumn",
-  filters: {
-    productIconName: function (endpoint) {
-      if (!endpoint) return "";
-
-      return endpoint.charAt(0).toUpperCase();
-    }
-  },
   components: { ConfidentialityIcon },
   mixins: [ StrToColorMixin ],
   props: {
     product: { type: Object, required: true }
   },
-  data() {
+  setup() {
+    const productIconName = (endpoint) => {
+      if (!endpoint) return "";
+      return endpoint.charAt(0).toUpperCase();
+    };
+
     return {
       DBStatus,
+      productIconName,
       links: [
         { name: "runs", title: "Show runs", color: "primary",
           icon: "mdi-run-fast", divider: true },
@@ -158,5 +158,5 @@ export default {
       }
     },
   }
-};
+});
 </script>

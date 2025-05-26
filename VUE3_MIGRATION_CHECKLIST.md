@@ -4,305 +4,305 @@
 **IMPORTANT**: When working on this migration, you MUST update this checklist as you complete tasks. Change `- [ ]` to `- [x]` for each completed item. This ensures proper progress tracking and prevents duplicate work.
 
 ## Core Files (Priority 1)
-- [ ] `web/server/vue-cli/package.json` - Update all Vue ecosystem dependencies
-- [ ] `web/server/vue-cli/src/main.js` - Replace `new Vue()` with `createApp()`
-- [ ] `web/server/vue-cli/src/router/index.js` - Update to Vue Router 4 syntax
-- [ ] `web/server/vue-cli/src/store/index.js` - Update to Vuex 4 or migrate to Pinia
-- [ ] `web/server/vue-cli/src/plugins/vuetify.js` - Update to Vuetify 3 syntax
+- [x] `web/server/vue-cli/package.json` - Update all Vue ecosystem dependencies
+- [x] `web/server/vue-cli/src/main.js` - Replace `new Vue()` with `createApp()`
+- [x] `web/server/vue-cli/src/router/index.js` - Update to Vue Router 4 syntax
+- [x] `web/server/vue-cli/src/store/index.js` - Update to Vuex 4 or migrate to Pinia
+- [x] `web/server/vue-cli/src/plugins/vuetify.js` - Update to Vuetify 3 syntax
 
 ## Build Configuration
-- [ ] `web/server/vue-cli/config/webpack.common.js` - Update loaders for Vue 3
-- [ ] `web/server/vue-cli/config/webpack.dev.js` - Update dev server config
-- [ ] `web/server/vue-cli/config/webpack.prod.js` - Update production config
-- [ ] `web/server/vue-cli/config/helpers.js` - Build helper functions
-- [ ] `web/server/vue-cli/.eslintrc.js` - Update ESLint rules for Vue 3
-- [ ] `web/server/vue-cli/.babelrc` - Update Babel config if needed
-- [ ] `web/server/vue-cli/jest` config in package.json - Update test transform
-- [ ] `web/server/vue-cli/nightwatch.conf.js` - E2E test configuration
+- [x] `web/server/vue-cli/config/webpack.common.js` - Update loaders for Vue 3
+- [x] `web/server/vue-cli/config/webpack.dev.js` - Update dev server config
+- [x] `web/server/vue-cli/config/webpack.prod.js` - Update production config
+- [x] `web/server/vue-cli/config/helpers.js` - Build helper functions
+- [x] `web/server/vue-cli/.eslintrc.js` - Update ESLint rules for Vue 3
+- [x] `web/server/vue-cli/.babelrc` - Update Babel config if needed
+- [x] `web/server/vue-cli/jest` config in package.json - Update test transform
+- [x] `web/server/vue-cli/nightwatch.conf.js` - E2E test configuration
 
 ## Event Bus Files (Priority 2)
 ### Files creating event buses with `new Vue()`
-- [ ] `web/server/vue-cli/src/services/api/_base.service.js` - Replace event bus
-- [ ] `web/server/vue-cli/src/views/Statistics.vue` - Replace event bus
-- [ ] `web/server/vue-cli/src/components/Report/Report.vue` - Replace event bus  
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseSelectOptionFilter.mixin.js` - Replace event bus
-- [ ] `web/server/vue-cli/src/components/Report/Comment/ReportComments.vue` - Replace event bus
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/ListReviewStatusRules.vue` - Replace event bus
-- [ ] `web/server/vue-cli/src/components/Product/EditProductBtn.vue` - Replace event bus
-- [ ] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermissionBtn.vue` - Replace event bus
+- [x] `web/server/vue-cli/src/services/api/_base.service.js` - Replace event bus
+- [x] `web/server/vue-cli/src/views/Statistics.vue` - Replace event bus
+- [x] `web/server/vue-cli/src/components/Report/Report.vue` - Replace event bus  
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseSelectOptionFilter.mixin.js` - Replace event bus
+- [x] `web/server/vue-cli/src/components/Report/Comment/ReportComments.vue` - Replace event bus
+- [x] `web/server/vue-cli/src/components/ReviewStatus/ListReviewStatusRules.vue` - Replace event bus
+- [x] `web/server/vue-cli/src/components/Product/EditProductBtn.vue` - Replace event bus
+- [x] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermissionBtn.vue` - Replace event bus
 
 ### Files using `Vue.extend()`
-- [ ] `web/server/vue-cli/src/components/Report/Report.vue` - Replace `Vue.extend()` with `defineComponent()`
-- [ ] `web/server/vue-cli/src/components/Report/Git/GitBlame.js` - Replace `Vue.extend()` with `defineComponent()`
+- [x] `web/server/vue-cli/src/components/Report/Report.vue` - Replace `Vue.extend()` with `defineComponent()`
+- [x] `web/server/vue-cli/src/components/Report/Git/GitBlame.js` - Replace `Vue.extend()` with `defineComponent()`
 
 ## All Vue Components (134 files)
 ### Views
-- [ ] `web/server/vue-cli/src/App.vue`
-- [ ] `web/server/vue-cli/src/views/Reports.vue`
-- [ ] `web/server/vue-cli/src/views/SourceComponent.vue`
-- [ ] `web/server/vue-cli/src/views/Login.vue`
-- [ ] `web/server/vue-cli/src/views/ReviewStatusRules.vue`
-- [ ] `web/server/vue-cli/src/views/ReportDetail.vue`
-- [ ] `web/server/vue-cli/src/views/RunList.vue`
-- [ ] `web/server/vue-cli/src/views/Statistics.vue`
-- [ ] `web/server/vue-cli/src/views/NewFeatures.vue`
-- [ ] `web/server/vue-cli/src/views/CleanupPlan.vue`
-- [ ] `web/server/vue-cli/src/views/ProductDetail.vue`
-- [ ] `web/server/vue-cli/src/views/RunDetail.vue`
-- [ ] `web/server/vue-cli/src/views/Userguide.vue`
-- [ ] `web/server/vue-cli/src/views/NotFound.vue`
-- [ ] `web/server/vue-cli/src/views/OAuthLogin.vue`
-- [ ] `web/server/vue-cli/src/views/Products.vue`
+- [x] `web/server/vue-cli/src/App.vue`
+- [x] `web/server/vue-cli/src/views/Reports.vue`
+- [x] `web/server/vue-cli/src/views/SourceComponent.vue`
+- [x] `web/server/vue-cli/src/views/Login.vue`
+- [x] `web/server/vue-cli/src/views/ReviewStatusRules.vue`
+- [x] `web/server/vue-cli/src/views/ReportDetail.vue`
+- [x] `web/server/vue-cli/src/views/RunList.vue`
+- [x] `web/server/vue-cli/src/views/Statistics.vue`
+- [x] `web/server/vue-cli/src/views/NewFeatures.vue`
+- [x] `web/server/vue-cli/src/views/CleanupPlan.vue`
+- [x] `web/server/vue-cli/src/views/ProductDetail.vue`
+- [x] `web/server/vue-cli/src/views/RunDetail.vue`
+- [x] `web/server/vue-cli/src/views/Userguide.vue`
+- [x] `web/server/vue-cli/src/views/NotFound.vue`
+- [x] `web/server/vue-cli/src/views/OAuthLogin.vue`
+- [x] `web/server/vue-cli/src/views/Products.vue`
 
 ### Core Components
-- [ ] `web/server/vue-cli/src/components/TooltipHelpIcon.vue`
-- [ ] `web/server/vue-cli/src/components/ConfirmDialog.vue`
-- [ ] `web/server/vue-cli/src/components/CountChips.vue`
-- [ ] `web/server/vue-cli/src/components/DateTimePicker.vue`
-- [ ] `web/server/vue-cli/src/components/AnalysisInfoDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Alerts.vue`
-- [ ] `web/server/vue-cli/src/components/BulbMessage.vue`
-- [ ] `web/server/vue-cli/src/components/CopyBtn.vue`
-- [ ] `web/server/vue-cli/src/components/CheckerDocumentationDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Errors.vue`
+- [x] `web/server/vue-cli/src/components/TooltipHelpIcon.vue`
+- [x] `web/server/vue-cli/src/components/ConfirmDialog.vue`
+- [x] `web/server/vue-cli/src/components/CountChips.vue`
+- [x] `web/server/vue-cli/src/components/DateTimePicker.vue`
+- [x] `web/server/vue-cli/src/components/AnalysisInfoDialog.vue`
+- [x] `web/server/vue-cli/src/components/Alerts.vue`
+- [x] `web/server/vue-cli/src/components/BulbMessage.vue`
+- [x] `web/server/vue-cli/src/components/CopyBtn.vue`
+- [x] `web/server/vue-cli/src/components/CheckerDocumentationDialog.vue`
+- [x] `web/server/vue-cli/src/components/Errors.vue`
 
 ### Statistics Components
-- [ ] `web/server/vue-cli/src/components/Statistics/ReportDiffCount.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/StatisticsDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/UniqueStatWarning.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/BaseStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/BaseStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Severity/SeverityStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Severity/SeverityStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Checker/CheckerStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Checker/CheckerStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Component/ComponentStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Component/ComponentStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Component/ExpandedItem.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Guideline/GuidelineStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Guideline/GuidelineStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/CheckerCoverage/CheckerCoverageStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/CheckerCoverage/CheckerCoverageStatisticsTable.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/Reports.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/FailedFilesDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/SingleLineWidget.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/OutstandingReportsChart.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/Overview.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatistics.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatisticsChart.vue`
-- [ ] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/ReportDiffCount.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/StatisticsDialog.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/UniqueStatWarning.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/BaseStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/BaseStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Severity/SeverityStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Severity/SeverityStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Checker/CheckerStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Checker/CheckerStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Component/ComponentStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Component/ComponentStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Component/ExpandedItem.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Guideline/GuidelineStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Guideline/GuidelineStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/CheckerCoverage/CheckerCoverageStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/CheckerCoverage/CheckerCoverageStatisticsTable.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/Reports.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/FailedFilesDialog.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/SingleLineWidget.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/OutstandingReportsChart.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/Overview.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatistics.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatisticsChart.vue`
+- [x] `web/server/vue-cli/src/components/Statistics/Overview/ComponentSeverityStatistics/ComponentSeverityStatisticsTable.vue`
 
 ### Review Status Components
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/ReviewStatusLabel.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/ListReviewStatusRules.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/RemoveFilteredRulesDialog.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/EditReviewStatusRuleDialog.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/ReviewStatusRuleFilter.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/SelectReviewStatus.vue`
-- [ ] `web/server/vue-cli/src/components/ReviewStatus/RemoveReviewStatusRuleDialog.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/ReviewStatusLabel.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/ListReviewStatusRules.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/RemoveFilteredRulesDialog.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/EditReviewStatusRuleDialog.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/ReviewStatusRuleFilter.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/SelectReviewStatus.vue`
+- [x] `web/server/vue-cli/src/components/ReviewStatus/RemoveReviewStatusRuleDialog.vue`
 
 ### Product Components
-- [ ] `web/server/vue-cli/src/components/Product/ProductConfigForm.vue`
-- [ ] `web/server/vue-cli/src/components/Product/DeleteProductBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/EditAnnouncementBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/NewProductBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/EditProductBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/SelectConfidentialityItem.vue`
-- [ ] `web/server/vue-cli/src/components/Product/ProductNameColumn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermission.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/EditProductPermission.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/ProductUserPermission.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/BaseProductPermission.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermissionBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/ProductGroupPermission.vue`
+- [x] `web/server/vue-cli/src/components/Product/ProductConfigForm.vue`
+- [x] `web/server/vue-cli/src/components/Product/DeleteProductBtn.vue`
+- [x] `web/server/vue-cli/src/components/Product/EditAnnouncementBtn.vue`
+- [x] `web/server/vue-cli/src/components/Product/NewProductBtn.vue`
+- [x] `web/server/vue-cli/src/components/Product/EditProductBtn.vue`
+- [x] `web/server/vue-cli/src/components/Product/SelectConfidentialityItem.vue`
+- [x] `web/server/vue-cli/src/components/Product/ProductNameColumn.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermission.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/EditProductPermission.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/ProductUserPermission.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/BaseProductPermission.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/EditGlobalPermissionBtn.vue`
+- [x] `web/server/vue-cli/src/components/Product/Permission/ProductGroupPermission.vue`
 
 ### Report Components
-- [ ] `web/server/vue-cli/src/components/Report/Report.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SelectReviewStatus.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportStepMessage.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SelectSameReportItem.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SelectSameReport.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SelectReviewStatusItem.vue`
-- [ ] `web/server/vue-cli/src/components/Report/AnalysisInfoBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Git/ToggleBlameViewBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Git/GitBlameLine.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/ReportCount.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/ReportFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/ClearAllFilters.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/RemoveFilteredReports.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportStepIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportTree.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeLabel.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportInfo/ReportInfoButton.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportInfo/ShowReportInfoDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportInfo/ReportInfo.vue`
+- [x] `web/server/vue-cli/src/components/Report/Report.vue`
+- [x] `web/server/vue-cli/src/components/Report/SelectReviewStatus.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportStepMessage.vue`
+- [x] `web/server/vue-cli/src/components/Report/SelectSameReportItem.vue`
+- [x] `web/server/vue-cli/src/components/Report/SelectSameReport.vue`
+- [x] `web/server/vue-cli/src/components/Report/SelectReviewStatusItem.vue`
+- [x] `web/server/vue-cli/src/components/Report/AnalysisInfoBtn.vue`
+- [x] `web/server/vue-cli/src/components/Report/Git/ToggleBlameViewBtn.vue`
+- [x] `web/server/vue-cli/src/components/Report/Git/GitBlameLine.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/ReportCount.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/ReportFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/ClearAllFilters.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/RemoveFilteredReports.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportTree/ReportStepIcon.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportTree/ReportTree.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeIcon.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportTree/ReportTreeLabel.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportInfo/ReportInfoButton.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportInfo/ShowReportInfoDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportInfo/ReportInfo.vue`
 
 ### Report Filter Components
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReviewStatusFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToDiffTypeFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CleanupPlanFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CheckerNameFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SourceComponentFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionDateFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToRunFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReportStatusFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CheckerMessageFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/FilePathFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionStatusFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/AnalyzerNameFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToOpenReportsDateFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReportHashFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BugPathLengthFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/FixDateFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionDateFilterIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineTagItems.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/UniqueFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineOpenReportsDateFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SeverityFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineRunFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/TestcaseFilter.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/SelectOption.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/Items.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/SelectedToolbarTitleItems.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/ItemsSelected.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/AnywhereOnReportPath.vue`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/Layout/FilterToolbar.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReviewStatusFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToDiffTypeFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CleanupPlanFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CheckerNameFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SourceComponentFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionDateFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToRunFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReportStatusFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/CheckerMessageFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/FilePathFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionStatusFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/AnalyzerNameFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ComparedToOpenReportsDateFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/ReportHashFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BugPathLengthFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/FixDateFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/DetectionDateFilterIcon.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineTagItems.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/UniqueFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineOpenReportsDateFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SeverityFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaselineRunFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/TestcaseFilter.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/SelectOption.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/Items.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/SelectedToolbarTitleItems.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/ItemsSelected.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/SelectOption/AnywhereOnReportPath.vue`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/Layout/FilterToolbar.vue`
 
 ### Comment Components
-- [ ] `web/server/vue-cli/src/components/Report/Comment/RemoveCommentBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/UserComment.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/NewComment.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/EditCommentDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/EditCommentBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/ReportComments.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/SystemComment.vue`
-- [ ] `web/server/vue-cli/src/components/Report/Comment/RemoveCommentDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/RemoveCommentBtn.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/UserComment.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/NewComment.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/EditCommentDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/EditCommentBtn.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/ReportComments.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/SystemComment.vue`
+- [x] `web/server/vue-cli/src/components/Report/Comment/RemoveCommentDialog.vue`
 
 ### Cleanup Plan Components
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanTab.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/ListCleanupPlans.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanList.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanSubtitle.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/ListCleanupPlansTable.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/RemoveCleanupPlanDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/DueDateMenu.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/EditCleanupPlanDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/ManageCleanupPlanDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/SetCleanupPlanBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/DueDate.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanTab.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/ListCleanupPlans.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanList.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanSubtitle.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/ListCleanupPlansTable.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/RemoveCleanupPlanDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/DueDateMenu.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/EditCleanupPlanDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/ManageCleanupPlanDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/SetCleanupPlanBtn.vue`
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/DueDate.vue`
 
 ### Source Component Components
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/SourceComponentTooltip.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/ListSourceComponents.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/RemoveSourceComponentDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/EditSourceComponentDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Report/SourceComponent/ManageSourceComponentDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/SourceComponent/SourceComponentTooltip.vue`
+- [x] `web/server/vue-cli/src/components/Report/SourceComponent/ListSourceComponents.vue`
+- [x] `web/server/vue-cli/src/components/Report/SourceComponent/RemoveSourceComponentDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/SourceComponent/EditSourceComponentDialog.vue`
+- [x] `web/server/vue-cli/src/components/Report/SourceComponent/ManageSourceComponentDialog.vue`
 
 ### Run Components
-- [ ] `web/server/vue-cli/src/components/Run/RunFilterToolbar.vue`
-- [ ] `web/server/vue-cli/src/components/Run/AnalyzerStatisticsDialog.vue`
-- [ ] `web/server/vue-cli/src/components/Run/RunNameColumn.vue`
-- [ ] `web/server/vue-cli/src/components/Run/AnalysisInfoBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Run/VersionTag.vue`
-- [ ] `web/server/vue-cli/src/components/Run/AnalyzerStatisticsBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Run/ShowStatisticsBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Run/DeleteRunBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Run/ExpandedRun.vue`
-- [ ] `web/server/vue-cli/src/components/Run/RunDescription.vue`
+- [x] `web/server/vue-cli/src/components/Run/RunFilterToolbar.vue`
+- [x] `web/server/vue-cli/src/components/Run/AnalyzerStatisticsDialog.vue`
+- [x] `web/server/vue-cli/src/components/Run/RunNameColumn.vue`
+- [x] `web/server/vue-cli/src/components/Run/AnalysisInfoBtn.vue`
+- [x] `web/server/vue-cli/src/components/Run/VersionTag.vue`
+- [x] `web/server/vue-cli/src/components/Run/AnalyzerStatisticsBtn.vue`
+- [x] `web/server/vue-cli/src/components/Run/ShowStatisticsBtn.vue`
+- [x] `web/server/vue-cli/src/components/Run/DeleteRunBtn.vue`
+- [x] `web/server/vue-cli/src/components/Run/ExpandedRun.vue`
+- [x] `web/server/vue-cli/src/components/Run/RunDescription.vue`
 
 ### Icon Components
-- [ ] `web/server/vue-cli/src/components/Icons/DetectionStatusIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/ReportStepEnumIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/ConfidentialityIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/ReportStatusIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/ReviewStatusIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/AnalyzerStatisticsIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/UserIcon.vue`
-- [ ] `web/server/vue-cli/src/components/Icons/SeverityIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/DetectionStatusIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/ReportStepEnumIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/ConfidentialityIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/ReportStatusIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/ReviewStatusIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/AnalyzerStatisticsIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/UserIcon.vue`
+- [x] `web/server/vue-cli/src/components/Icons/SeverityIcon.vue`
 
 ### Layout Components
-- [ ] `web/server/vue-cli/src/components/Layout/PersonalAccessTokenBtn.vue`
-- [ ] `web/server/vue-cli/src/components/Layout/TheHeader.vue`
-- [ ] `web/server/vue-cli/src/components/Layout/HeaderMenuItems.vue`
-- [ ] `web/server/vue-cli/src/components/Layout/UserInfoMenu.vue`
+- [x] `web/server/vue-cli/src/components/Layout/PersonalAccessTokenBtn.vue`
+- [x] `web/server/vue-cli/src/components/Layout/TheHeader.vue`
+- [x] `web/server/vue-cli/src/components/Layout/HeaderMenuItems.vue`
+- [x] `web/server/vue-cli/src/components/Layout/UserInfoMenu.vue`
 
 ### Analysis Info Components
-- [ ] `web/server/vue-cli/src/components/AnalysisInfo/Checker.vue`
-- [ ] `web/server/vue-cli/src/components/AnalysisInfo/CheckerRows.vue`
-- [ ] `web/server/vue-cli/src/components/AnalysisInfo/CheckerGroup.vue`
+- [x] `web/server/vue-cli/src/components/AnalysisInfo/Checker.vue`
+- [x] `web/server/vue-cli/src/components/AnalysisInfo/CheckerRows.vue`
+- [x] `web/server/vue-cli/src/components/AnalysisInfo/CheckerGroup.vue`
 
 ### New Features Components
-- [ ] `web/server/vue-cli/src/components/NewFeatures/NewReleaseItem.vue`
-- [ ] `web/server/vue-cli/src/components/NewFeatures/NewFeatureItem.vue`
+- [x] `web/server/vue-cli/src/components/NewFeatures/NewReleaseItem.vue`
+- [x] `web/server/vue-cli/src/components/NewFeatures/NewFeatureItem.vue`
 
 ## Test Files
 ### Unit Tests
-- [ ] `web/server/vue-cli/src/filters/__tests__/truncate.test.js`
-- [ ] `web/server/vue-cli/src/filters/__tests__/prettify-date.test.js`
-- [ ] `web/server/vue-cli/src/mixins/__tests__/detection-status.mixin.test.js`
-- [ ] `web/server/vue-cli/src/mixins/__tests__/severity.mixin.test.js`
-- [ ] `web/server/vue-cli/src/mixins/__tests__/bug-path-length-color.mixin.test.js`
-- [ ] `web/server/vue-cli/src/mixins/__tests__/review-status.mixin.test.js`
-- [ ] `web/server/vue-cli/src/router/__tests__/backward-compatible-url.test.js`
-- [ ] `web/server/vue-cli/src/mixins/__tests__/str-to-color.mixin.test.js`
+- [x] `web/server/vue-cli/src/filters/__tests__/truncate.test.js`
+- [x] `web/server/vue-cli/src/filters/__tests__/prettify-date.test.js`
+- [x] `web/server/vue-cli/src/mixins/__tests__/detection-status.mixin.test.js`
+- [x] `web/server/vue-cli/src/mixins/__tests__/severity.mixin.test.js`
+- [x] `web/server/vue-cli/src/mixins/__tests__/bug-path-length-color.mixin.test.js`
+- [x] `web/server/vue-cli/src/mixins/__tests__/review-status.mixin.test.js`
+- [x] `web/server/vue-cli/src/router/__tests__/backward-compatible-url.test.js`
+- [x] `web/server/vue-cli/src/mixins/__tests__/str-to-color.mixin.test.js`
 
 ### E2E Tests (Only if CSS selectors change)
-- [ ] Review E2E tests after Vuetify 3 migration - may need selector updates
+- [x] Review E2E tests after Vuetify 3 migration - may need selector updates
 
 ## Mixins (15 files)
-- [ ] `web/server/vue-cli/src/mixins/severity.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/bug-path-length-color.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/version.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/confidentiality.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/str-to-color.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/date.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/report-status.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/detection-status.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/to-csv.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/review-status.mixin.js`
-- [ ] `web/server/vue-cli/src/mixins/api/analysis-info-handling.mixin.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseFilter.mixin.js`
-- [ ] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseSelectOptionFilter.mixin.js`
-- [ ] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanTab.mixin.js`
-- [ ] `web/server/vue-cli/src/components/Product/Permission/PopulatePermissions.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/severity.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/bug-path-length-color.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/version.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/confidentiality.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/str-to-color.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/date.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/report-status.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/detection-status.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/to-csv.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/review-status.mixin.js`
+- [x] `web/server/vue-cli/src/mixins/api/analysis-info-handling.mixin.js`
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseFilter.mixin.js` (converted to composable)
+- [x] `web/server/vue-cli/src/components/Report/ReportFilter/Filters/BaseSelectOptionFilter.mixin.js` (converted to composable)
+- [x] `web/server/vue-cli/src/components/Report/CleanupPlan/CleanupPlanTab.mixin.js`
+- [x] `web/server/vue-cli/src/components/Product/Permission/PopulatePermissions.mixin.js`
 
-## Store Modules (9 files)
-- [ ] `web/server/vue-cli/src/store/modules/run.js`
-- [ ] `web/server/vue-cli/src/store/modules/auth.js`
-- [ ] `web/server/vue-cli/src/store/modules/server-info.js`
-- [ ] `web/server/vue-cli/src/store/modules/report.js`
-- [ ] `web/server/vue-cli/src/store/modules/statistics.js`
-- [ ] `web/server/vue-cli/src/store/modules/error.js`
-- [ ] `web/server/vue-cli/src/store/modules/config.js`
-- [ ] `web/server/vue-cli/src/store/modules/product.js`
-- [ ] `web/server/vue-cli/src/store/modules/url.js`
-- [ ] `web/server/vue-cli/src/store/modules/base-filter.js`
+## Store Modules (10 files)
+- [x] `web/server/vue-cli/src/store/modules/run.js`
+- [x] `web/server/vue-cli/src/store/modules/auth.js`
+- [x] `web/server/vue-cli/src/store/modules/server-info.js`
+- [x] `web/server/vue-cli/src/store/modules/report.js`
+- [x] `web/server/vue-cli/src/store/modules/statistics.js`
+- [x] `web/server/vue-cli/src/store/modules/error.js`
+- [x] `web/server/vue-cli/src/store/modules/config.js`
+- [x] `web/server/vue-cli/src/store/modules/product.js`
+- [x] `web/server/vue-cli/src/store/modules/url.js`
+- [x] `web/server/vue-cli/src/store/modules/base-filter.js`
 
 ## Filters (4 files) 
-- [ ] `web/server/vue-cli/src/filters/index.js` - Remove Vue.filter() calls
-- [ ] `web/server/vue-cli/src/filters/truncate.js`
-- [ ] `web/server/vue-cli/src/filters/from-unix-time.js`
-- [ ] `web/server/vue-cli/src/filters/prettify-date.js`
+- [x] `web/server/vue-cli/src/filters/index.js` - Remove Vue.filter() calls
+- [x] `web/server/vue-cli/src/filters/truncate.js`
+- [x] `web/server/vue-cli/src/filters/from-unix-time.js`
+- [x] `web/server/vue-cli/src/filters/prettify-date.js`
 
 ## Directives (2 files)
-- [ ] `web/server/vue-cli/src/directives/index.js`
-- [ ] `web/server/vue-cli/src/directives/FillHeightDirective.js`
+- [x] `web/server/vue-cli/src/directives/index.js`
+- [x] `web/server/vue-cli/src/directives/FillHeightDirective.js`
 
 ## Services (Only 1 file with Vue dependency)
-- [ ] `web/server/vue-cli/src/services/api/_base.service.js` - Already listed above in event bus section
+- [x] `web/server/vue-cli/src/services/api/_base.service.js` - Already listed above in event bus section
 
 ## Other Files
-- [ ] `web/server/vue-cli/src/components/Report/Git/GitBlame.js` - Convert to composition API
-- [ ] `web/server/vue-cli/src/variables.scss` - Update Vuetify imports
-- [ ] Review other JS files only if they import Vue or use Vue APIs
+- [x] `web/server/vue-cli/src/components/Report/Git/GitBlame.js` - Convert to composition API
+- [x] `web/server/vue-cli/src/variables.scss` - Update Vuetify imports
+- [x] Review other JS files only if they import Vue or use Vue APIs
 
 ## Index Files (Simple exports - likely no changes needed)
-- [ ] Review index.js files only if imports/exports change
+- [x] Review index.js files only if imports/exports change
 
 ## Utility Files (Only 1 needs changes)
-- [ ] `web/server/vue-cli/src/components/Statistics/DefaultStatisticsFilterValues.js` - Uses mixin, needs update
-- [ ] Review other utility files only if they import Vue or mixins
+- [x] `web/server/vue-cli/src/components/Statistics/DefaultStatisticsFilterValues.js` - Uses mixin, needs update
+- [x] Review other utility files only if they import Vue or mixins
 
 ## Migration Notes
 

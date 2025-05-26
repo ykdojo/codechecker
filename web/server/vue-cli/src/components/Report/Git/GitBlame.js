@@ -1,10 +1,9 @@
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { parse } from "date-fns";
 
 import { ccService, handleThriftError } from "@cc-api";
 
 import GitBlameLine from "./GitBlameLine";
-const GitBlameLineClass = Vue.extend(GitBlameLine);
 
 function getCommitColor(commit, minDate, maxDate) {
   const currTime = commit.committedDateTime;
@@ -47,7 +46,7 @@ function getBlameInfo(fileId) {
   });
 }
 
-export default {
+export default defineComponent({
   data() {
     return {
       editor: null,
@@ -106,8 +105,8 @@ export default {
           if (this.gutterMarkers[i])
             continue;
 
-          const widget = new GitBlameLineClass({
-            propsData: {
+          const widget = new GitBlameLine({
+            props: {
               number: i + 1,
               commit,
               color: lastCommitColor,
@@ -174,4 +173,4 @@ export default {
       }).catch(() => {});
     }
   }
-};
+});

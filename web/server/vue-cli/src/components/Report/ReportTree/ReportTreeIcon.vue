@@ -94,7 +94,9 @@ import {
 import ReportTreeKind from "./ReportTreeKind";
 import ReportStepIcon from "./ReportStepIcon";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportTreeIcon",
   components: {
     DetectionStatusIcon,

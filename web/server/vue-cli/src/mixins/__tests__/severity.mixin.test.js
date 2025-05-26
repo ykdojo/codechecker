@@ -1,37 +1,34 @@
-import { SeverityMixin } from "@/mixins";
+import { useSeverity } from "@/composables/useSeverity";
 import { Severity } from "@cc/report-server-types";
 
-const toString =
-  SeverityMixin.methods.severityFromCodeToString;
-const fromString =
-  SeverityMixin.methods.severityFromStringToCode;
-
 describe("Convert severity", () => {
+  const { severityFromCodeToString, severityFromStringToCode } = useSeverity();
+
   test("Convert existing severity value to string", () => {
-    expect(toString(Severity.UNSPECIFIED)).toEqual("Unspecified");
-    expect(toString(Severity.STYLE)).toEqual("Style");
-    expect(toString(Severity.LOW)).toEqual("Low");
-    expect(toString(Severity.MEDIUM)).toEqual("Medium");
-    expect(toString(Severity.HIGH)).toEqual("High");
-    expect(toString(Severity.CRITICAL)).toEqual("Critical");
+    expect(severityFromCodeToString(Severity.UNSPECIFIED)).toEqual("Unspecified");
+    expect(severityFromCodeToString(Severity.STYLE)).toEqual("Style");
+    expect(severityFromCodeToString(Severity.LOW)).toEqual("Low");
+    expect(severityFromCodeToString(Severity.MEDIUM)).toEqual("Medium");
+    expect(severityFromCodeToString(Severity.HIGH)).toEqual("High");
+    expect(severityFromCodeToString(Severity.CRITICAL)).toEqual("Critical");
   });
 
   test("Convert non existing severity to string", () => {
-    expect(toString(-1)).toEqual("");
-    expect(toString(null)).toEqual("");
+    expect(severityFromCodeToString(-1)).toEqual("");
+    expect(severityFromCodeToString(null)).toEqual("");
   });
 
   test("Convert string to severity", () => {
-    expect(fromString("Unspecified")).toEqual(Severity.UNSPECIFIED);
-    expect(fromString("style")).toEqual(Severity.STYLE);
-    expect(fromString("LOW")).toEqual(Severity.LOW);
-    expect(fromString("MediUM")).toEqual(Severity.MEDIUM);
-    expect(fromString("HIGH")).toEqual(Severity.HIGH);
-    expect(fromString("critical")).toEqual(Severity.CRITICAL);
+    expect(severityFromStringToCode("Unspecified")).toEqual(Severity.UNSPECIFIED);
+    expect(severityFromStringToCode("style")).toEqual(Severity.STYLE);
+    expect(severityFromStringToCode("LOW")).toEqual(Severity.LOW);
+    expect(severityFromStringToCode("MediUM")).toEqual(Severity.MEDIUM);
+    expect(severityFromStringToCode("HIGH")).toEqual(Severity.HIGH);
+    expect(severityFromStringToCode("critical")).toEqual(Severity.CRITICAL);
   });
 
   test("Convert string to non existing severity", () => {
-    expect(fromString("")).toEqual(-1);
-    expect(fromString("dummy")).toEqual(-1);
+    expect(severityFromStringToCode("")).toEqual(-1);
+    expect(severityFromStringToCode("dummy")).toEqual(-1);
   });
 });

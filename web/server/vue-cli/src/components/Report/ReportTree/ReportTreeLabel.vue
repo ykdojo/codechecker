@@ -39,7 +39,9 @@
 import ReportTreeKind from "./ReportTreeKind";
 import { DetectionStatus } from "@cc/report-server-types";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportTreeLabel",
   props: {
     item: {

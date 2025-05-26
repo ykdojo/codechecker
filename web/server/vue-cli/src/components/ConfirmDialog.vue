@@ -1,19 +1,19 @@
 <template>
   <v-dialog
-    v-model="dialog"
+    v-model="modelValue"
     persistent
     :content-class="contentClass"
     :max-width="maxWidth"
     :scrollable="scrollable"
   >
-    <template v-slot:activator="{ on }">
-      <slot name="activator" :on="on" />
+    <template v-slot:activator="{ props }">
+      <slot name="activator" :props="props" />
     </template>
 
     <v-card
       v-if="loading"
       color="primary"
-      dark
+      theme="dark"
     >
       <v-card-text>
         Loading...
@@ -27,14 +27,14 @@
 
     <v-card v-else>
       <v-card-title
-        class="pt-3 pb-2 title primary white--text"
+        class="pt-3 pb-2 title primary text-white"
         primary-title
       >
         <slot name="title" />
 
         <v-spacer />
 
-        <v-btn class="close-btn" icon dark @click="dialog = false">
+        <v-btn class="close-btn" icon variant="text" @click="updateDialog(false)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -53,16 +53,16 @@
         <v-spacer />
 
         <v-btn
-          text
+          variant="text"
           class="cancel-btn"
           :color="cancelBtnColor"
-          @click="dialog = false"
+          @click="updateDialog(false)"
         >
           {{ cancelBtnLabel }}
         </v-btn>
 
         <v-btn
-          text
+          variant="text"
           class="confirm-btn"
           :color="confirmBtnColor"
           @click="$emit('confirm')"
@@ -74,30 +74,23 @@
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: "ConfirmDialog",
-  props: {
-    value: { type: Boolean, default: false },
-    cancelBtnLabel: { type: String, default: "Cancel" },
-    cancelBtnColor: { type: String, default: "error" },
-    confirmBtnLabel: { type: String, default: "Save" },
-    confirmBtnColor: { type: String, default: "primary" },
-    confirmInProgress: { type: Boolean, default: false },
-    maxWidth: { type: String, default: "600px" },
-    scrollable: { type: Boolean, default: true },
-    loading: { type: Boolean, default: false },
-    contentClass: { type: String, default: null }
-  },
-  computed: {
-    dialog: {
-      get() {
-        return this.value;
-      },
-      set(value) {
-        this.$emit("input", value);
-      }
-    }
-  }
+<script setup>
+const props = defineProps({
+  modelValue: { type: Boolean, default: false },
+  cancelBtnLabel: { type: String, default: "Cancel" },
+  cancelBtnColor: { type: String, default: "error" },
+  confirmBtnLabel: { type: String, default: "Save" },
+  confirmBtnColor: { type: String, default: "primary" },
+  confirmInProgress: { type: Boolean, default: false },
+  maxWidth: { type: String, default: "600px" },
+  scrollable: { type: Boolean, default: true },
+  loading: { type: Boolean, default: false },
+  contentClass: { type: String, default: null }
+});
+
+const emit = defineEmits(['update:modelValue', 'confirm']);
+
+const updateDialog = (value) => {
+  emit('update:modelValue', value);
 };
 </script>

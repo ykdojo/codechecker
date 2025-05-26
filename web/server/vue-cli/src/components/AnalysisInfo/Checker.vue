@@ -1,43 +1,36 @@
-<template>
+<![CDATA[<template>
   <v-row
     no-gutters
     align="center"
     class="analysis-info-checker"
     :data-checker-name="name"
   >
-    <v-col
-      cols="auto"
-    >
+    <v-col cols="auto">
       <analyzer-statistics-icon
         class="mr-2"
         :value="(enabled ? 'successful' : 'failed')"
-        :title="'\'' + name + '\' ' + (enabled ? 'was' : 'was not') +
+        :title="'\\'' + name + '\\' ' + (enabled ? 'was' : 'was not') +
           ' enabled in this analysis.'"
       />
     </v-col>
     <v-col
-      :class="'pr-1 checker-name ' +
-        (enabled ? 'checker-enabled' : 'checker-disabled')"
+      :class="['pr-1', 'checker-name',
+        enabled ? 'checker-enabled' : 'checker-disabled']"
     >
       {{ name }}
     </v-col>
   </v-row>
 </template>
 
-<script>
+<script setup>
 import { AnalyzerStatisticsIcon } from "@/components/Icons";
 
-export default {
-  name: "Checker",
-  components: {
-    AnalyzerStatisticsIcon
-  },
-  props: {
-    name: { type: String, required: true },
-    enabled: { type: Boolean, required: true }
-  }
-};
+defineProps({
+  name: { type: String, required: true },
+  enabled: { type: Boolean, required: true }
+});
 </script>
+
 <style lang="scss" scoped>
 .analysis-info {
   .checker-name {
@@ -53,4 +46,4 @@ export default {
     color: black;
   }
 }
-</style>
+</style>]]>

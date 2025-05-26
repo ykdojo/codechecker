@@ -10,11 +10,11 @@
     @clear="clear(true)"
     @input="setSelectedItems"
   >
-    <template v-slot:icon="{ item }">
+    <template #icon="{ item }">
       <review-status-icon :status="item.id" />
     </template>
 
-    <template v-slot:append-toolbar-title>
+    <template #append-toolbar-title>
       <tooltip-help-icon>
         Filter reports by the <b>latest</b> review status.<br><br>
 
@@ -44,74 +44,58 @@
   </select-option>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import { ccService, handleThriftError } from "@cc-api";
-
 import { ReportFilter, ReviewStatus } from "@cc/report-server-types";
 import TooltipHelpIcon from "@/components/TooltipHelpIcon";
 import { ReviewStatusIcon } from "@/components/Icons";
-import { ReviewStatusMixin } from "@/mixins";
-
+import { useReviewStatus } from "@/composables";
 import { SelectOption, SelectedToolbarTitleItems } from "./SelectOption";
-import BaseSelectOptionFilterMixin from "./BaseSelectOptionFilter.mixin";
+import { useBaseSelectOptionFilter } from "./composables/useBaseSelectOptionFilter";
 
-export default {
-  name: "ReviewStatusFilter",
-  components: {
-    SelectOption,
-    ReviewStatusIcon,
-    SelectedToolbarTitleItems,
-    TooltipHelpIcon
-  },
-  mixins: [ BaseSelectOptionFilterMixin, ReviewStatusMixin ],
+const id = ref("review-status");
+const { reviewStatusFromCodeToString, reviewStatusFromStringToCode } = useReviewStatus();
+const { selectedItems, bus, loading, panel, setSelectedItems, clear } = useBaseSelectOptionFilter(id.value);
 
-  data() {
-    return {
-      id: "review-status"
-    };
-  },
+function encodeValue(reviewStatusId) {
+  return reviewStatusFromCodeToString(reviewStatusId);
+}
 
-  methods: {
-    encodeValue(reviewStatusId) {
-      return this.reviewStatusFromCodeToString(reviewStatusId);
-    },
+function decodeValue(reviewStatusName) {
+  return reviewStatusFromStringToCode(reviewStatusName);
+}
 
-    decodeValue(reviewStatusName) {
-      return this.reviewStatusFromStringToCode(reviewStatusName);
-    },
+function updateReportFilter() {
+  setReportFilter({
+    reviewStatus: selectedItems.value.map(item => item.id)
+  });
+}
 
-    updateReportFilter() {
-      this.setReportFilter({
-        reviewStatus: this.selectedItems.map(item => item.id)
-      });
-    },
+function onReportFilterChange(key) {
+  if (key === "reviewStatus") return;
+  update();
+}
 
-    onReportFilterChange(key) {
-      if (key === "reviewStatus") return;
-      this.update();
-    },
+function fetchItems() {
+  loading.value = true;
 
-    fetchItems() {
-      this.loading = true;
+  const reportFilter = new ReportFilter(reportFilter);
+  reportFilter.reviewStatus = null;
 
-      const reportFilter = new ReportFilter(this.reportFilter);
-      reportFilter.reviewStatus = null;
-
-      return new Promise(resolve => {
-        ccService.getClient().getReviewStatusCounts(this.runIds, reportFilter,
-          this.cmpData, handleThriftError(res => {
-            resolve(Object.keys(ReviewStatus).map(status => {
-              const id = ReviewStatus[status];
-              return {
-                id: id,
-                title: this.encodeValue(id),
-                count: res[id] !== undefined ? res[id].toNumber() : 0
-              };
-            }));
-            this.loading = false;
-          }));
-      });
-    }
-  }
-};
+  return new Promise(resolve => {
+    ccService.getClient().getReviewStatusCounts(runIds, reportFilter,
+      cmpData, handleThriftError(res => {
+        resolve(Object.keys(ReviewStatus).map(status => {
+          const id = ReviewStatus[status];
+          return {
+            id: id,
+            title: encodeValue(id),
+            count: res[id] !== undefined ? res[id].toNumber() : 0
+          };
+        }));
+        loading.value = false;
+      }));
+  });
+}
 </script>

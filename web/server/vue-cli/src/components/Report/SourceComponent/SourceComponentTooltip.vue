@@ -3,8 +3,8 @@
     right
     color="white"
   >
-    <template v-slot:activator="{ on }">
-      <slot :on="on" />
+    <template #activator="{ props: tooltipProps }">
+      <slot :props="tooltipProps" />
     </template>
 
     <v-card
@@ -26,13 +26,10 @@
   </v-tooltip>
 </template>
 
-<script>
-export default {
-  name: "SourceComponentTooltip",
-  props: {
-    value: { type: String, required: true }
-  }
-};
+<script setup>
+defineProps({
+  value: { type: String, required: true }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,3 +1,56 @@
+<script setup>
+import { ref } from 'vue';
+import { BaseStatisticsTable } from "@/components/Statistics";
+
+const props = defineProps({
+  items: { type: Array, required: true },
+  loading: { type: Boolean, default: false }
+});
+
+const headers = ref([
+  {
+    title: "Severity",
+    key: "severity",
+    align: "center"
+  },
+  {
+    title: "Unreviewed",
+    key: "unreviewed.count",
+    align: "center"
+  },
+  {
+    title: "Confirmed bug",
+    key: "confirmed.count",
+    align: "center"
+  },
+  {
+    title: "Outstanding reports",
+    key: "outstanding.count",
+    align: "center"
+  },
+  {
+    title: "False positive",
+    key: "falsePositive.count",
+    align: "center"
+  },
+  {
+    title: "Intentional",
+    key: "intentional.count",
+    align: "center"
+  },
+  {
+    title: "Suppressed reports",
+    key: "suppressed.count",
+    align: "center"
+  },
+  {
+    title: "All reports",
+    key: "reports.count",
+    align: "center"
+  }
+]);
+</script>
+
 <template>
   <base-statistics-table
     class="severity-statistics"
@@ -8,76 +61,13 @@
     :colspan="1"
     loading-text="Loading severity statistics..."
     item-key="severity"
-    sort-by="severity"
-    sort-desc
+    :default-sort="[{ key: 'severity', order: 'desc' }]"
     :necessary-total="true"
   />
 </template>
 
-<script>
-import { BaseStatisticsTable } from "@/components/Statistics";
-
-export default {
-  name: "SeverityStatisticsTable",
-  components: {
-    BaseStatisticsTable
-  },
-  props: {
-    items: { type: Array, required: true },
-    loading: { type: Boolean, default: false }
-  },
-
-  data() {
-    return {
-      headers: [
-        {
-          text: "Severity",
-          value: "severity",
-          align: "center"
-        },
-        {
-          text: "Unreviewed",
-          value: "unreviewed.count",
-          align: "center"
-        },
-        {
-          text: "Confirmed bug",
-          value: "confirmed.count",
-          align: "center"
-        },
-        {
-          text: "Outstanding reports",
-          value: "outstanding.count",
-          align: "center"
-        },
-        {
-          text: "False positive",
-          value: "falsePositive.count",
-          align: "center"
-        },
-        {
-          text: "Intentional",
-          value: "intentional.count",
-          align: "center"
-        },
-        {
-          text: "Suppressed reports",
-          value: "suppressed.count",
-          align: "center"
-        },
-        {
-          text: "All reports",
-          value: "reports.count",
-          align: "center"
-        }
-      ]
-    };
-  }
-};
-</script>
-
 <style lang="scss" scoped>
-$class-name: ".severity-statistics > ::v-deep .v-data-table__wrapper";
+$class-name: ".severity-statistics > :deep(.v-data-table__wrapper)";
 $unreviewed_col: 2;
 $colspan: 0;
 

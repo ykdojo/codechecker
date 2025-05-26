@@ -1,9 +1,8 @@
-import { StrToColorMixin } from "@/mixins";
-
-const strToColor =
-  StrToColorMixin.methods.strToColor;
+import { useStrToColor } from "@/composables/useStrToColor";
 
 describe("Convert string to color", () => {
+  const { strToColor } = useStrToColor();
+
   test("Convert empty string to color", () => {
     expect(strToColor("")).toEqual("#000000");
   });

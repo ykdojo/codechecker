@@ -5,7 +5,7 @@ module.exports = {
     jest: true
   },
   extends: [
-    "plugin:vue/recommended",
+    "plugin:vue/vue3-recommended",
     "eslint:recommended"
   ],
   rules: {
@@ -27,11 +27,8 @@ module.exports = {
       "singleline": 20,
       "multiline": 1
     }],
-    "vue/v-slot-style": "off",
-    "vue/valid-v-slot": "off",
     "vue/multi-word-component-names": "off",
     "vue/no-mutating-props": "off",
-    "vue/valid-next-tick": "off",
     "quotes": ["error", "double", {
       "avoidEscape": true
     }]

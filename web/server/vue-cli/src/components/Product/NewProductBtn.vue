@@ -4,27 +4,27 @@
     max-width="50%"
     @confirm="save"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ props }">
       <v-btn
         id="new-product-btn"
         color="primary"
-        v-on="on"
+        v-bind="props"
       >
-        <v-icon left>
+        <v-icon start>
           mdi-plus
         </v-icon>
         New product
       </v-btn>
     </template>
 
-    <template v-slot:title>
+    <template #title>
       New product
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <product-config-form
         ref="form"
-        :is-valid.sync="isValid"
+        v-model:is-valid="isValid"
         :is-super-user="isSuperUser"
         :product-config="productConfig"
       />
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { defineComponent, ref } from 'vue';
 import { handleThriftError, prodService } from "@cc-api";
 import {
   DatabaseConnection,
@@ -42,7 +43,7 @@ import {
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ProductConfigForm from "./ProductConfigForm";
 
-export default {
+export default defineComponent({
   name: "NewProductBtn",
   components: {
     ConfirmDialog,
@@ -51,30 +52,37 @@ export default {
   props: {
     isSuperUser: { type: Boolean, default: false }
   },
-  data() {
-    return {
-      dialog: false,
-      productConfig: new ProductConfiguration({
-        connection: new DatabaseConnection()
-      }),
-      isValid: false
-    };
-  },
-  methods: {
-    save() {
-      if (!this.$refs.form.validate()) return;
+  emits: ['on-complete'],
+  setup(props, { emit }) {
+    const dialog = ref(false);
+    const form = ref(null);
+    const isValid = ref(false);
+    const productConfig = ref(new ProductConfiguration({
+      connection: new DatabaseConnection()
+    }));
 
-      prodService.getClient().addProduct(this.productConfig,
+    const save = () => {
+      if (!form.value.validate()) return;
+
+      prodService.getClient().addProduct(productConfig.value,
         handleThriftError(() => {
-          this.$emit("on-complete",
-            new ProductConfiguration(this.productConfig));
+          emit("on-complete",
+            new ProductConfiguration(productConfig.value));
 
-          this.dialog = false;
-          this.productConfig = new ProductConfiguration({
+          dialog.value = false;
+          productConfig.value = new ProductConfiguration({
             connection: new DatabaseConnection()
           });
         }));
-    }
+    };
+
+    return {
+      dialog,
+      form,
+      isValid,
+      productConfig,
+      save
+    };
   }
-};
+});
 </script>

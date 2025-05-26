@@ -1,3 +1,4 @@
+import { createRouter, createWebHistory } from 'vue-router';
 import convertOldUrlToNew from "@/router/backward-compatible-url";
 
 describe("Backward compatible urls", () => {

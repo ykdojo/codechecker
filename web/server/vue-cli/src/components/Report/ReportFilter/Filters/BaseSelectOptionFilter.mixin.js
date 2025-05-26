@@ -1,4 +1,4 @@
-import Vue from "vue";
+import eventBus from "@/eventBus";
 import BaseFilterMixin from "./BaseFilter.mixin";
 
 export default {
@@ -9,7 +9,7 @@ export default {
     return {
       id: -1,
       selectedItems: [],
-      bus: new Vue(),
+      bus: eventBus,
       loading: false,
       defaultValues: null
     };
@@ -85,7 +85,7 @@ export default {
     },
 
     async update() {
-      this.bus.$emit("update");
+      this.bus.emit("update");
 
       if (!this.selectedItems.length) return;
 

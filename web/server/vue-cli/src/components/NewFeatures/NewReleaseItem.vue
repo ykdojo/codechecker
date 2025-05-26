@@ -1,25 +1,19 @@
-<template>
+<![CDATA[<template>
   <new-feature-item :color="color" :flat="false">
-    <template v-slot:title>
+    <template #title>
       <slot name="title" />
     </template>
 
-    <template v-slot>
+    <template #default>
       <slot />
     </template>
   </new-feature-item>
 </template>
 
-<script>
+<script setup>
 import NewFeatureItem from "./NewFeatureItem";
 
-export default {
-  name: "NewReleaseItem",
-  components: {
-    NewFeatureItem
-  },
-  props: {
-    color: { type: String, default: "primary" }
-  }
-};
-</script>
+defineProps({
+  color: { type: String, default: "primary" }
+});
+</script>]]>

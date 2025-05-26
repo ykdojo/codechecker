@@ -1,52 +1,40 @@
-<template>
+<![CDATA[<template>
   <v-expansion-panel
     class="analyzer-checker-group-panel"
     :data-group-name="group"
   >
-    <v-expansion-panel-header
-      class="pa-0 px-1"
-    >
-      <v-row
-        no-gutters
-        align="center"
-      >
+    <v-expansion-panel-header class="pa-0 px-1">
+      <v-row no-gutters align="center">
         <v-col cols="auto">
           <v-chip
             class="mr-1 pa-1"
             :color="groupWideStatus"
             :ripple="false"
-            :title="'Group \'' + group + '\' was' +
+            :title="'Group \\'' + group + '\\' was' +
               (needDetailedCounts ? ' partially' :
                 (groupEnabled ? '' : ' not')
               ) +
               ' enabled in this analysis'"
-            outlined
-            dark
-            small
+            variant="outlined"
+            color="dark"
+            size="small"
           >
-            <v-icon
-              v-if="!needDetailedCounts && groupEnabled"
-              start
-            >
-              mdi-check
-            </v-icon>
-            <v-icon
-              v-else-if="!needDetailedCounts && !groupEnabled"
-              start
-            >
-              mdi-close
-            </v-icon>
-            <v-icon
-              v-else-if="needDetailedCounts"
-              start
-            >
-              mdi-tune
-            </v-icon>
+            <template v-slot:prepend>
+              <v-icon v-if="!needDetailedCounts && groupEnabled">
+                mdi-check
+              </v-icon>
+              <v-icon v-else-if="!needDetailedCounts && !groupEnabled">
+                mdi-close
+              </v-icon>
+              <v-icon v-else-if="needDetailedCounts">
+                mdi-tune
+              </v-icon>
+            </template>
           </v-chip>
         </v-col>
         <v-col
           cols="auto"
-          class="pl-2 checker-group-name primary--text"
+          class="pl-2 checker-group-name text-primary"
         >
           {{ group }}
         </v-col>
@@ -69,54 +57,36 @@
       </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-      <checker-rows
-        :checkers="checkers"
-      />
+      <checker-rows :checkers="checkers" />
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
 import CountChips from "@/components/CountChips";
 import CheckerRows from "./CheckerRows";
 import { CountKeys } from "@/mixins/api/analysis-info-handling.mixin";
 
-export default {
-  name: "CheckerGroup",
-  components: {
-    CheckerRows,
-    CountChips,
-  },
-  props: {
-    group: { type: String, required: true },
-    checkers: { type: Array, required: true },
-    counts: { type: Array, required: true }
-  },
-  computed: {
-    numEnabled() {
-      return this.counts[this.CountKeys.Enabled];
-    },
-    numDisabled() {
-      return this.counts[this.CountKeys.Disabled];
-    },
-    needDetailedCounts() {
-      return this.numEnabled > 0 && this.numDisabled > 0;
-    },
-    groupWideStatus() {
-      if (this.numEnabled > 0 && this.numDisabled === 0)
-        return "success";
-      if (this.numEnabled === 0 && this.numDisabled > 0)
-        return "error";
-      return "grey darken-1";
-    },
-    groupEnabled() {
-      return this.groupWideStatus === "success";
-    },
-    CountKeys() {
-      return CountKeys;
-    }
-  }
-};
+const props = defineProps({
+  group: { type: String, required: true },
+  checkers: { type: Array, required: true },
+  counts: { type: Array, required: true }
+});
+
+const numEnabled = computed(() => props.counts[CountKeys.Enabled]);
+const numDisabled = computed(() => props.counts[CountKeys.Disabled]);
+const needDetailedCounts = computed(() => numEnabled.value > 0 && numDisabled.value > 0);
+
+const groupWideStatus = computed(() => {
+  if (numEnabled.value > 0 && numDisabled.value === 0)
+    return "success";
+  if (numEnabled.value === 0 && numDisabled.value > 0)
+    return "error";
+  return "grey-darken-1";
+});
+
+const groupEnabled = computed(() => groupWideStatus.value === "success");
 </script>
 
 <style lang="scss" scoped>
@@ -126,4 +96,4 @@ export default {
   font-style: italic;
   font-weight: medium;
 }
-</style>
+</style>]]>

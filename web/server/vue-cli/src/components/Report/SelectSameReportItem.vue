@@ -29,7 +29,9 @@
 import { DetectionStatusIcon, ReviewStatusIcon } from "@/components/Icons";
 import { BugPathLengthColorMixin } from "@/mixins";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "SelectSameReportItem",
   components: {
     DetectionStatusIcon,

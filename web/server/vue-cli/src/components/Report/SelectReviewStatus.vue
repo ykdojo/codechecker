@@ -158,7 +158,9 @@ import { ReviewStatusMixin } from "@/mixins";
 import { DetectionStatusIcon, ReviewStatusIcon } from "@/components/Icons";
 import SelectReviewStatusItem from "./SelectReviewStatusItem";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "SelectReviewStatus",
   components: {
     DetectionStatusIcon,
@@ -246,11 +248,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-select__selections input {
+:deep(.v-select__selections input) {
   display: none;
 }
 
-::v-deep .v-select.v-text-field--outlined {
+:deep(.v-select.v-text-field--outlined) {
   .theme--light.v-label {
     background-color: #fff;
   }

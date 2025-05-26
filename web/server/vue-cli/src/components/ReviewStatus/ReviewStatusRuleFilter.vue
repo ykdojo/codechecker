@@ -5,16 +5,13 @@
         <v-text-field
           v-model="reportHash"
           class="report-hash"
-          prepend-inner-icon="mdi-magnify"
+          prepend-icon="mdi-magnify"
           label="Search by report hash..."
-          single-line
+          variant="outlined"
+          density="compact"
           hide-details
-          outlined
-          solo
-          flat
-          dense
           clearable
-          @input="onTextFilterChanged"
+          @update:model-value="onTextFilterChanged"
         />
       </v-col>
       <v-col class="py-0">
@@ -28,26 +25,23 @@
         <v-text-field
           v-model="author"
           class="author"
-          prepend-inner-icon="mdi-magnify"
+          prepend-icon="mdi-magnify"
           label="Search by author..."
-          single-line
+          variant="outlined"
+          density="compact"
           hide-details
-          outlined
-          solo
-          flat
-          dense
           clearable
-          @input="onTextFilterChanged"
+          @update:model-value="onTextFilterChanged"
         />
       </v-col>
       <v-col class="py-0">
         <v-checkbox
           v-model="noAssociatedReports"
           class="no-associated-reports ma-0 py-0"
-          :hide-details="true"
-          @change="onFilterChanged"
+          hide-details
+          @update:model-value="onFilterChanged"
         >
-          <template v-slot:label>
+          <template #label>
             No associated reports
             <tooltip-help-icon>
               Show only review status rules which have no associated reports
@@ -62,98 +56,101 @@
 </template>
 
 <script>
-import _ from "lodash";
-
+import { ref, computed, defineComponent, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { debounce } from 'lodash';
 import { ReviewStatusRuleFilter } from "@cc/report-server-types";
-
-import { ReviewStatusMixin } from "@/mixins";
+import { useReviewStatus } from "@/composables/review-status";
 import TooltipHelpIcon from "@/components/TooltipHelpIcon";
 import SelectReviewStatus from "./SelectReviewStatus";
 
-export default {
+export default defineComponent({
   name: "ReviewStatusRuleFilter",
   components: { SelectReviewStatus, TooltipHelpIcon },
-  mixins: [ ReviewStatusMixin ],
   props: {
     bus: { type: Object, required: true }
   },
-  data() {
-    const queries = this.$router.currentRoute.query;
-    const reportHash = queries["report-hash"];
-    const noAssociatedReports =
-      (queries["no-associated-reports"] && true) || false;
-    const reviewStatus = queries["review-status"]
-      ? this.reviewStatusFromStringToCode(queries["review-status"]) : null;
-    const author = queries["author"];
+  emits: ['on:filter'],
+  setup(props, { emit }) {
+    const router = useRouter();
+    const route = useRoute();
+    const { reviewStatusFromStringToCode, reviewStatusFromCodeToString } = useReviewStatus();
 
-    return {
-      author,
-      reportHash,
-      reviewStatus,
-      noAssociatedReports
-    };
-  },
-  computed: {
-    status() {
-      if (this.reviewStatus !== null) {
-        return this.reviewStatusFromCodeToString(this.reviewStatus);
+    const queries = route.query;
+    const reportHash = ref(queries['report-hash'] || null);
+    const noAssociatedReports = ref(queries['no-associated-reports'] === 'on');
+    const reviewStatus = ref(queries['review-status'] 
+      ? reviewStatusFromStringToCode(queries['review-status']) 
+      : null);
+    const author = ref(queries['author'] || null);
+
+    const status = computed(() => {
+      if (reviewStatus.value !== null) {
+        return reviewStatusFromCodeToString(reviewStatus.value);
       }
       return null;
-    },
+    });
 
-    filter() {
-      if (
-        !this.reportHash &&
-        !this.noAssociatedReports &&
-        !this.reviewStatus &&
-        !this.author
-      ) return;
+    const filter = computed(() => {
+      if (!reportHash.value && 
+          !noAssociatedReports.value && 
+          !reviewStatus.value && 
+          !author.value) return;
 
       const filter = new ReviewStatusRuleFilter();
-      filter.reportHashes = this.reportHash ? [ `${this.reportHash}*` ] : null;
-      filter.authors = this.author ? [ `${this.author}*` ] : null;
-      filter.reviewStatuses =
-        this.reviewStatus !== null ? [ this.reviewStatus ] : null;
-      filter.noAssociatedReports = this.noAssociatedReports;
+      filter.reportHashes = reportHash.value ? [`${reportHash.value}*`] : null;
+      filter.authors = author.value ? [`${author.value}*`] : null;
+      filter.reviewStatuses = 
+        reviewStatus.value !== null ? [reviewStatus.value] : null;
+      filter.noAssociatedReports = noAssociatedReports.value;
 
       return filter;
-    }
-  },
-  mounted() {
-    this.onFilterChanged();
-
-    this.bus.$on("clear", () => {
-      this.reportHash = null;
-      this.author = null;
-      this.reviewStatus = null;
-      this.noAssociatedReports = null;
-
-      this.onFilterChanged();
     });
-  },
-  methods: {
-    onTextFilterChanged: _.debounce(function () {
-      this.onFilterChanged();
-    }, 400),
 
-    onFilterChanged () {
-      this.$emit("on:filter", this.filter);
-      this.updateUrl({
-        "report-hash": this.reportHash ? this.reportHash : undefined,
-        "author": this.author ? this.author : undefined,
-        "no-associated-reports": this.noAssociatedReports ? "on" : undefined,
-        "review-status": this.status !== null ? this.status : undefined
-      });
-    },
-
-    updateUrl(params) {
-      this.$router.replace({
+    const updateUrl = (params) => {
+      router.replace({
         query: {
-          ...this.$route.query,
+          ...route.query,
           ...params
         }
       }).catch(() => {});
-    }
+    };
+
+    const onFilterChanged = () => {
+      emit('on:filter', filter.value);
+      updateUrl({
+        'report-hash': reportHash.value || undefined,
+        'author': author.value || undefined,
+        'no-associated-reports': noAssociatedReports.value ? 'on' : undefined,
+        'review-status': status.value !== null ? status.value : undefined
+      });
+    };
+
+    const onTextFilterChanged = debounce(onFilterChanged, 400);
+
+    onMounted(() => {
+      onFilterChanged();
+
+      props.bus.$on('clear', () => {
+        reportHash.value = null;
+        author.value = null;
+        reviewStatus.value = null;
+        noAssociatedReports.value = null;
+
+        onFilterChanged();
+      });
+    });
+
+    return {
+      reportHash,
+      author,
+      reviewStatus,
+      noAssociatedReports,
+      status,
+      onTextFilterChanged,
+      onFilterChanged,
+      updateUrl
+    };
   }
-};
+});
 </script>

@@ -40,8 +40,8 @@ module.exports = {
       desiredCapabilities: {
         browserName: "chrome",
         chromeOptions : {
-          args: [ ...[ chromeHeadless ? "--headless" : undefined ] ],
-          w3c: false
+          args: [ ...[ chromeHeadless ? "--headless=new" : undefined ] ],
+          w3c: true
         }
       }
     },

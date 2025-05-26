@@ -18,10 +18,10 @@
           text
         >
           The report (
-          report ID: <i>{{ $router.currentRoute.query["report-id"] }}</i>,
-          report hash: <i>{{ $router.currentRoute.query["report-hash"] }}</i>,
+          report ID: <i>{{ this.$route.query["report-id"] }}</i>,
+          report hash: <i>{{ this.$route.query["report-hash"] }}</i>,
           file path:
-          <i>"{{ $router.currentRoute.query["report-filepath"] }}"</i>
+          <i>"{{ this.$route.query["report-filepath"] }}"</i>
           ) was removed from the database.
 
           <span v-if="!$router.currentRoute.query['report-hash']">

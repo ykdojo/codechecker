@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="d-flex align-center">
     <v-avatar
-      left
       :size="16"
+      class="mr-2"
     >
       <confidentiality-icon
         :value="confidentialityFromStringToCode(value)"
-        small
+        density="compact"
       />
     </v-avatar>
     {{ value }}
@@ -14,10 +14,11 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 import { ConfidentialityMixin } from "@/mixins";
 import { ConfidentialityIcon } from "@/components/Icons";
 
-export default {
+export default defineComponent({
   name: "SelectConfidentialityItem",
   components: {
     ConfidentialityIcon
@@ -26,6 +27,5 @@ export default {
   props: {
     value: { type: String, required: true }
   }
-};
+});
 </script>
-

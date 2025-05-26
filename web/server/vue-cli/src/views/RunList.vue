@@ -1,13 +1,13 @@
 <template>
   <v-card flat tile>
     <analysis-info-dialog
-      :value.sync="analysisInfoDialog"
+      v-model="analysisInfoDialog"
       :run-id="selectedRunId"
       :run-history-id="selectedRunHistoryId"
     />
 
     <analyzer-statistics-dialog
-      :value.sync="analyzerStatisticsDialog"
+      v-model="analyzerStatisticsDialog"
       :run-id="selectedRunId"
       :run-history-id="selectedRunHistoryId"
     />
@@ -16,12 +16,12 @@
       v-model="selected"
       :headers="headers"
       :items="runs"
-      :options.sync="pagination"
+      v-model:options="pagination"
       :loading="loading"
       loading-text="Loading runs..."
-      :server-items-length.sync="totalItems"
+      v-model:server-items-length="totalItems"
       :footer-props="footerProps"
-      :expanded.sync="expanded"
+      v-model:expanded="expanded"
       show-expand
       :must-sort="true"
       :mobile-breakpoint="1000"
@@ -52,8 +52,8 @@
             :run="item"
             :open-analysis-info-dialog="openAnalysisInfoDialog"
             :open-analyzer-statistics-dialog="openAnalyzerStatisticsDialog"
-            :selected-baseline-tags.sync="selectedBaselineTags"
-            :selected-compared-to-tags.sync="selectedComparedToTags"
+            v-model:selected-baseline-tags="selectedBaselineTags"
+            v-model:selected-compared-to-tags="selectedComparedToTags"
           >
             <v-btn
               v-if="item.$history.hasMore"
@@ -100,7 +100,7 @@
           <v-icon left>
             mdi-calendar-range
           </v-icon>
-          {{ item.runDate | prettifyDate }}
+          {{ prettifyDate(item.runDate) }}
         </v-chip>
       </template>
 

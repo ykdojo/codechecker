@@ -2,24 +2,24 @@
   <v-container fluid>
     <v-alert
       v-model="success"
-      dismissible
-      color="success"
-      border="left"
-      elevation="2"
-      colored-border
-      icon="mdi-check"
+      type="success"
+      variant="tonal"
+      density="compact"
+      closable
+      border-color="success"
+      :prepend-icon="mdiBadgeAccountHorizontalOutline"
     >
       Permission changes saved successfully!
     </v-alert>
 
     <v-alert
       v-model="error"
-      dismissible
-      color="error"
-      border="left"
-      elevation="2"
-      colored-border
-      icon="mdi-alert-outline"
+      type="error"
+      variant="tonal"
+      density="compact"
+      closable
+      border-color="error"
+      :prepend-icon="mdiAlertOutline"
     >
       Some permission changes could not be saved!
     </v-alert>
@@ -32,8 +32,8 @@
           :bus="bus"
           :extra-params-json="extraParamsJSON"
           :is-group="false"
-          :success.sync="success"
-          :error.sync="error"
+          v-model:success="success"
+          v-model:error="error"
         />
       </v-col>
       <v-col>
@@ -43,8 +43,8 @@
           :bus="bus"
           :extra-params-json="extraParamsJSON"
           :is-group="true"
-          :success.sync="success"
-          :error.sync="error"
+          v-model:success="success"
+          v-model:error="error"
         />
       </v-col>
     </v-row>
@@ -52,11 +52,13 @@
 </template>
 
 <script>
+import { defineComponent, ref, onMounted } from 'vue';
+import { mdiBadgeAccountHorizontalOutline, mdiAlertOutline } from '@mdi/js';
 import PopulatePermissionsMixin from "./PopulatePermissions.mixin";
 import ProductUserPermission from "./ProductUserPermission";
 import ProductGroupPermission from "./ProductGroupPermission";
 
-export default {
+export default defineComponent({
   name: "EditProductPermission",
   components: {
     ProductUserPermission,
@@ -66,18 +68,24 @@ export default {
   props: {
     bus: { type: Object, required: true },
   },
+  setup() {
+    const success = ref(false);
+    const error = ref(false);
+    const scope = "SYSTEM";
+    const extraParamsJSON = JSON.stringify({});
 
-  data() {
+    onMounted(() => {
+      this.populatePermissions(scope, extraParamsJSON);
+    });
+
     return {
-      scope: "SYSTEM",
-      extraParamsJSON: JSON.stringify({}),
-      success: false,
-      error: false
+      scope,
+      extraParamsJSON,
+      success,
+      error,
+      mdiBadgeAccountHorizontalOutline,
+      mdiAlertOutline
     };
-  },
-
-  mounted() {
-    this.populatePermissions(this.scope, this.extraParamsJSON);
   }
-};
+});
 </script>

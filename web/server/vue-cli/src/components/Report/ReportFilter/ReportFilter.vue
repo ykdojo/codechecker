@@ -356,7 +356,9 @@ import ClearAllFilters from "./ClearAllFilters";
 import RemoveFilteredReports from "./RemoveFilteredReports";
 import ReportCount from "./ReportCount";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportFilter",
   components: {
     AnalyzerNameFilter,

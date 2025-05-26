@@ -21,19 +21,16 @@ export default {
     Errors,
     TheHeader
   },
-  data() {
-    return {
-      keepAliveList: []
-    };
-  },
+  data: () => ({
+    keepAliveList: []
+  }),
   computed: {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     }
   },
   watch: {
-    // eslint-disable-next-line no-unused-vars
-    isAuthenticated(newValue, _) {
+    isAuthenticated(newValue) {
       if (newValue) {
         this.keepAliveList.push("Products");
       } else {

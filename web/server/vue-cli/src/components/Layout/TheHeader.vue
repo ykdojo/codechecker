@@ -7,7 +7,7 @@
   >
     <template
       v-if="announcement && announcement.length"
-      v-slot:extension
+      #extension
     >
       <v-system-bar
         color="#ff9800"
@@ -66,7 +66,7 @@
             ? item.query || {}
             : queries[item.query_namespace]
         }"
-        :class="item.active.includes($route.name) &&
+        :class="item.active.includes(route.name) &&
           'v-btn--active router-link-active'"
         :exact="item.exact"
         text
@@ -80,15 +80,14 @@
 
     <v-menu
       v-if="showConfigItems"
-      offset-y
+      location="bottom"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ props }">
         <v-btn
           text
-          :class="configureMenuItems.map(c => c.route).includes($route.name) &&
+          :class="configureMenuItems.map(c => c.route).includes(route.name) &&
             'v-btn--active router-link-active'"
-          v-bind="attrs"
-          v-on="on"
+          v-bind="props"
         >
           <v-icon left>
             mdi-cog-outline
@@ -108,9 +107,9 @@
             :to="{ name: item.route }"
             exact
           >
-            <v-list-item-avatar class="mr-1">
+            <template #prepend>
               <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-avatar>
+            </template>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
@@ -129,11 +128,11 @@
       v-if="showUserInfo"
     />
 
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
+    <v-menu location="bottom">
+      <template #activator="{ props }">
         <v-btn
           icon
-          v-on="on"
+          v-bind="props"
         >
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
@@ -145,7 +144,9 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { defineComponent, computed, ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
 import { GET_ANNOUNCEMENT, GET_PACKAGE_VERSION } from "@/store/actions.type";
 
@@ -154,122 +155,126 @@ import { defaultStatisticsFilterValues } from "@/components/Statistics";
 import HeaderMenuItems from "./HeaderMenuItems";
 import UserInfoMenu from "./UserInfoMenu";
 
-export default {
+export default defineComponent({
   name: "TheHeader",
   components: {
     HeaderMenuItems,
     UserInfoMenu
   },
-  data() {
-    return {
-      menuButtons: [
-        {
-          name: "Products",
-          query_namespace: "products",
-          icon: "mdi-briefcase-outline",
-          route: "products",
-          active: [ "products" ],
-          exact: true,
-          hide: [ "products", "login", "404" ]
-        },
-        {
-          name: "Runs",
-          query_namespace: "runs",
-          icon: "mdi-run-fast",
-          route: "runs",
-          active: [ "runs", "main_runs" ],
-          exact: true,
-          hide: [ "products", "login", "404" ]
-        },
-        {
-          name: "Reports",
-          query_namespace: "report_filter",
-          icon: "mdi-bug",
-          route: "reports",
-          active: [ "reports" ],
-          exact: true,
-          query: defaultReportFilterValues,
-          hide: [ "products", "login", "404" ]
-        },
-        {
-          name: "Statistics",
-          query_namespace: "report_filter",
-          icon: "mdi-chart-line",
-          route: "statistics",
-          active: [ "statistics" ],
-          exact: false,
-          query: defaultStatisticsFilterValues,
-          hide: [ "products", "login", "404" ]
-        }
-      ],
-      configureMenuItems: [
-        {
-          title: "Cleanup Plan",
-          icon: "mdi-sign-direction",
-          route: "cleanup-plan"
-        },
-        {
-          title: "Review Status Rules",
-          icon: "mdi-format-list-checkbox",
-          route: "review-status-rules"
-        },
-        {
-          title: "Source Component",
-          icon: "mdi-puzzle-outline",
-          route: "source-component"
-        }
-      ]
-    };
-  },
 
-  computed: {
-    ...mapGetters([
-      "queries",
-      "authParams",
-      "isAuthenticated",
-      "announcement",
-      "packageVersion",
-      "currentProduct"
-    ]),
+  setup() {
+    const store = useStore();
+    const route = useRoute();
 
-    currentProductDisplayName() {
-      return this.currentProduct
-        ? window.atob(this.currentProduct.displayedName_b64)
+    const menuButtons = ref([
+      {
+        name: "Products",
+        query_namespace: "products",
+        icon: "mdi-briefcase-outline",
+        route: "products",
+        active: [ "products" ],
+        exact: true,
+        hide: [ "products", "login", "404" ]
+      },
+      {
+        name: "Runs",
+        query_namespace: "runs",
+        icon: "mdi-run-fast",
+        route: "runs",
+        active: [ "runs", "main_runs" ],
+        exact: true,
+        hide: [ "products", "login", "404" ]
+      },
+      {
+        name: "Reports",
+        query_namespace: "report_filter",
+        icon: "mdi-bug",
+        route: "reports",
+        active: [ "reports" ],
+        exact: true,
+        query: defaultReportFilterValues,
+        hide: [ "products", "login", "404" ]
+      },
+      {
+        name: "Statistics",
+        query_namespace: "report_filter",
+        icon: "mdi-chart-line",
+        route: "statistics",
+        active: [ "statistics" ],
+        exact: false,
+        query: defaultStatisticsFilterValues,
+        hide: [ "products", "login", "404" ]
+      }
+    ]);
+
+    const configureMenuItems = ref([
+      {
+        title: "Cleanup Plan",
+        icon: "mdi-sign-direction",
+        route: "cleanup-plan"
+      },
+      {
+        title: "Review Status Rules",
+        icon: "mdi-format-list-checkbox",
+        route: "review-status-rules"
+      },
+      {
+        title: "Source Component",
+        icon: "mdi-puzzle-outline",
+        route: "source-component"
+      }
+    ]);
+
+    const currentProductDisplayName = computed(() => {
+      const currentProduct = store.getters.currentProduct;
+      return currentProduct
+        ? window.atob(currentProduct.displayedName_b64)
         : null;
-    },
+    });
 
-    menuItems() {
-      if (!this.$route.name) return [];
+    const menuItems = computed(() => {
+      if (!route.name) return [];
 
-      return this.menuButtons.filter(item => {
-        return !item.hide || !item.hide.includes(this.$route.name);
+      return menuButtons.value.filter(item => {
+        return !item.hide || !item.hide.includes(route.name);
       });
-    },
+    });
 
-    showMenuItems() {
-      return !this.authParams?.requiresAuthentication || this.isAuthenticated;
-    },
+    const showMenuItems = computed(() => {
+      const authParams = store.getters.authParams;
+      const isAuthenticated = store.getters.isAuthenticated;
+      return !authParams?.requiresAuthentication || isAuthenticated;
+    });
 
-    showUserInfo() {
-      return this.authParams?.requiresAuthentication && this.isAuthenticated;
-    },
+    const showUserInfo = computed(() => {
+      const authParams = store.getters.authParams;
+      const isAuthenticated = store.getters.isAuthenticated;
+      return authParams?.requiresAuthentication && isAuthenticated;
+    });
 
-    showConfigItems() {
-      return ![ "products", "login", "404" ].includes(this.$route.name) &&
-        this.showMenuItems;
-    }
-  },
+    const showConfigItems = computed(() => {
+      return ![ "products", "login", "404" ].includes(route.name) &&
+        showMenuItems.value;
+    });
 
-  mounted() {
-    this.getAnnouncement();
-    this.getPackageVersion();
-  },
+    onMounted(() => {
+      store.dispatch(GET_ANNOUNCEMENT);
+      store.dispatch(GET_PACKAGE_VERSION);
+    });
 
-  methods: {
-    ...mapActions([
-      GET_ANNOUNCEMENT,
-      GET_PACKAGE_VERSION
-    ])
+    return {
+      route,
+      menuButtons,
+      configureMenuItems,
+      currentProductDisplayName,
+      menuItems,
+      showMenuItems,
+      showUserInfo,
+      showConfigItems,
+      announcement: computed(() => store.getters.announcement),
+      packageVersion: computed(() => store.getters.packageVersion),
+      queries: computed(() => store.getters.queries)
+    };
   }
-};
+});
 </script>

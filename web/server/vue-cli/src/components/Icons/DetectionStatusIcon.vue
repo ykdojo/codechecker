@@ -55,10 +55,11 @@
 </template>
 
 <script>
+import { defineComponent, computed } from 'vue';
 import { DetectionStatus } from "@cc/report-server-types";
 import { DetectionStatusMixin } from "@/mixins";
 
-export default {
+export default defineComponent({
   name: "DetectionStatusIcon",
   mixins: [ DetectionStatusMixin ],
   props: {
@@ -67,18 +68,20 @@ export default {
     title: { type: String, default: null }
   },
 
-  data() {
+  setup(props) {
+    // Make DetectionStatus available in template
+    const detectionStatusEnums = { DetectionStatus };
+
+    const formattedTitle = computed(() => {
+      if (props.title) return props.title;
+
+      return DetectionStatusMixin.methods.detectionStatusFromCodeToString(props.status);
+    });
+
     return {
-      DetectionStatus
+      ...detectionStatusEnums,
+      formattedTitle
     };
-  },
-
-  computed: {
-    formattedTitle() {
-      if (this.title) return this.title;
-
-      return this.detectionStatusFromCodeToString(this.status);
-    }
   }
-};
+});
 </script>

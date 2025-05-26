@@ -67,7 +67,9 @@ import {
   SeverityMixin
 } from "@/mixins";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportInfo",
   components: {
     DetectionStatusIcon,

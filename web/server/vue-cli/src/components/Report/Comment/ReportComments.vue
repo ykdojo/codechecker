@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import Vue from "vue";
+import eventBus from "@/eventBus";
 
 import { ccService, handleThriftError } from "@cc-api";
 import { CommentKind } from "@cc/report-server-types";
@@ -88,7 +88,7 @@ export default {
       editDialog: false,
       removeDialog: false,
       loading: false,
-      bus: new Vue()
+      bus: eventBus
     };
   },
 
@@ -101,14 +101,14 @@ export default {
   mounted() {
     this.fetchComments();
 
-    this.bus.$on("update:comments", this.fetchComments);
+    this.bus.on("update:comments", this.fetchComments);
 
-    this.bus.$on("update:comment", comment => {
+    this.bus.on("update:comment", comment => {
       this.selected = comment;
       this.editDialog = true;
     });
 
-    this.bus.$on("remove:comment", comment => {
+    this.bus.on("remove:comment", comment => {
       this.selected = comment;
       this.removeDialog = true;
     });

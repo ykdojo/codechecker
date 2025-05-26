@@ -1,7 +1,73 @@
+<script setup>
+import { ref, computed } from 'vue';
+import {
+  CheckerInfoAvailability,
+  setCheckerStatusUnavailableDueToVersion
+} from "@/mixins/api/analysis-info-handling.mixin";
+
+const props = defineProps({
+  modelValue: { type: Boolean, required: true },
+  checkerName: { type: String, default: null },
+  type: { type: String, required: true },
+  runData: { type: Array, default: () => [] }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const runsWithAnalysisInfo = ref([]);
+
+const dialog = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+});
+
+const title = computed(() => {
+  let title = `${props.type.charAt(0).toUpperCase() 
+    + props.type.slice(1)} run list`;
+  if (props.checkerName) {
+    title += ` for the "${props.checkerName}" checker`;
+  }
+  return title;
+});
+
+const runs = computed(() => {
+  if (props.runData.length && props.runData[0].analysisInfo !== undefined) {
+    const alertTypes = {
+      [CheckerInfoAvailability.RunHistoryStoredWithOldVersionPre_v6_24]: {
+        runNames: [],
+        message: "analysed by an older version of CodeChecker. \
+        The list of statistics are only available from CodeChecker 6.24:"
+      },
+      [CheckerInfoAvailability.UnknownReason]: {
+        runNames: [],
+        message: "likely stored from a report directory \
+        which was not created natively by CodeChecker analyze:"
+      }
+    };
+    
+    props.runData.map(run => {
+      setCheckerStatusUnavailableDueToVersion(
+        run.analysisInfo, run.codeCheckerVersion);
+      
+      alertTypes[run.analysisInfo.checkerInfoAvailability].runNames.push(
+        run.runName);
+    });
+
+    return Object.values(alertTypes);
+  }
+  else {
+    return [{ 
+      runNames: props.runData.map(run => run.runName),
+      message: null 
+    }];
+  }
+});
+</script>
+
 <template>
   <v-dialog
     v-model="dialog"
-    content-class="documentation-dialog"
+    class="documentation-dialog"
     max-width="70%"
     scrollable
   >
@@ -56,9 +122,9 @@
                 </v-icon>
               </v-col>
               <v-col
-                col="auto"
+                cols="auto"
                 align-self="center" 
-                style="font-size: larger;"
+                class="text-larger"
               >
                 {{ runName }}
               </v-col>
@@ -70,84 +136,6 @@
   </v-dialog>
 </template>
 
-<script>
-
-import {
-  CheckerInfoAvailability,
-  setCheckerStatusUnavailableDueToVersion
-} from "@/mixins/api/analysis-info-handling.mixin";
-
-export default {
-  name: "StatisticsDialog",
-
-  props: {
-    value: { type: Boolean, required: true },
-    checkerName: { type: String, default: null },
-    type: { type: String, required: true },
-    runData: { type: Array, default: () => [] }
-  },
-
-  data() {
-    return {
-      runsWithAnalysisInfo: [],
-    };
-  },
-
-  computed: {
-    dialog: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit("update:value", val);
-      }
-    },
-
-    title() {
-      let title = `${this.type.charAt(0).toUpperCase() 
-        + this.type.slice(1)} run list`;
-      if ( this.checkerName ) {
-        title += ` for the "${this.checkerName}" checker`;
-      }
-      return title;
-    },
-
-    runs() {
-      if (this.runData.length && this.runData[0].analysisInfo !== undefined) {
-        const alertTypes = {
-          [CheckerInfoAvailability.RunHistoryStoredWithOldVersionPre_v6_24]: {
-            runNames: [],
-            message: "analysed by an older version of CodeChecker. \
-            The list of statistics are only available from CodeChecker 6.24:"
-          },
-          [CheckerInfoAvailability.UnknownReason]: {
-            runNames: [],
-            message: "likely stored from a report directory \
-            which was not created natively by CodeChecker analyze:"
-          }
-        };
-        
-        this.runData.map(run => {
-          setCheckerStatusUnavailableDueToVersion(
-            run.analysisInfo, run.codeCheckerVersion);
-          
-          alertTypes[run.analysisInfo.checkerInfoAvailability].runNames.push(
-            run.runName);
-        });
-
-        return Object.values(alertTypes);
-      }
-      else {
-        return [ { 
-          runNames: this.runData.map(run => run.runName),
-          message: null 
-        } ];
-      }
-    }
-  }
-};
-</script>
-
 <style lang="scss" scoped>
 .checker-rows-in-columns {
   columns: 32em auto;
@@ -157,5 +145,7 @@ export default {
   font-size: 125%;
   font-weight: bold;
 }
+.text-larger {
+  font-size: larger;
+}
 </style>
-

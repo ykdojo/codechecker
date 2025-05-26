@@ -2,8 +2,8 @@
   <v-treeview
     v-model="tree"
     :items="items"
-    :open.sync="openedItems"
-    :active.sync="activeItems"
+    v-model:open="openedItems"
+    v-model:active="activeItems"
     :load-children="getChildren"
     :return-object="true"
     activatable
@@ -56,7 +56,9 @@ import ReportTreeKind from "./ReportTreeKind";
 import ReportTreeRootItem from "./ReportTreeRootItem";
 import formatReportDetails from "./ReportDetailFormatter";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ReportTree",
   components: {
     ReportTreeIcon,
@@ -285,11 +287,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.v-treeview--dense ::v-deep .v-treeview-node__root {
+.v-treeview--dense :deep(.v-treeview-node__root) {
   min-height: 25px;
 }
 
-::v-deep .v-treeview-node__level {
+:deep(.v-treeview-node__level) {
   width: 18px;
 }
 </style>

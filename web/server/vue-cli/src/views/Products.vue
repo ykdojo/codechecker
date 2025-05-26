@@ -3,9 +3,9 @@
     <v-data-table
       :headers="headers"
       :items="products"
-      :options.sync="pagination"
+      v-model:options="pagination"
       :footer-props="footerProps"
-      :page.sync="page"
+      v-model:page="page"
       :must-sort="true"
       :loading="loading"
       :mobile-breakpoint="1000"
@@ -103,7 +103,7 @@
           <v-icon left>
             mdi-calendar-range
           </v-icon>
-          {{ item.latestStoreToProduct | prettifyDate }}
+          {{ prettifyDate(item.latestStoreToProduct) }}
         </v-chip>
       </template>
 
@@ -129,6 +129,7 @@
 
 <script>
 import _ from "lodash";
+import { prettifyDate } from "@/utils";
 
 import { authService, handleThriftError, prodService } from "@cc-api";
 import { DBStatus, Permission } from "@cc/shared-types";
@@ -155,9 +156,9 @@ export default {
 
   data() {
     const itemsPerPageOptions = [ 25 ];
-    const sortBy = this.$router.currentRoute.query["sort-by"];
-    const sortDesc = this.$router.currentRoute.query["sort-desc"];
-    const page = parseInt(this.$router.currentRoute.query["page"]) || 1;
+    const sortBy = this.$route.query["sort-by"];
+    const sortDesc = this.$route.query["sort-desc"];
+    const page = parseInt(this.$route.query["page"]) || 1;
 
     return {
       DBStatus,
@@ -250,7 +251,7 @@ export default {
   },
 
   created() {
-    this.productNameSearch = this.$router.currentRoute.query["name"] || null;
+    this.productNameSearch = this.$route.query["name"] || null;
 
     authService.getClient().hasPermission(Permission.SUPERUSER, "",
       handleThriftError(isSuperUser => {

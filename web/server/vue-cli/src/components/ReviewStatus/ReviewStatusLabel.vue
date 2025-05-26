@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-avatar
-      left
       :size="16"
+      class="mr-2"
     >
       <review-status-icon
-        :status="value"
+        :status="modelValue"
         :size="16"
       />
     </v-avatar>
@@ -17,23 +17,26 @@
 </template>
 
 <script>
+import { computed, defineComponent } from 'vue';
 import { ReviewStatusIcon } from "@/components/Icons";
-import { ReviewStatusMixin } from "@/mixins";
+import { useReviewStatus } from "@/composables/review-status";
 
-// TODO: this is the same as SelectReviewStatusItem component.
-export default {
+export default defineComponent({
   name: "ReviewStatusLabel",
   components: {
     ReviewStatusIcon
   },
-  mixins: [ ReviewStatusMixin ],
   props: {
-    value: { type: Number, required: true }
+    modelValue: { type: Number, required: true }
   },
-  computed: {
-    label() {
-      return this.reviewStatusFromCodeToString(this.value);
-    }
+  setup(props) {
+    const { reviewStatusFromCodeToString } = useReviewStatus();
+
+    const label = computed(() => 
+      reviewStatusFromCodeToString(props.modelValue)
+    );
+
+    return { label };
   }
-};
+});
 </script>

@@ -1,4 +1,3 @@
-import Vue from "vue";
 import {
   TBufferedTransport,
   TJSONProtocol,
@@ -10,6 +9,7 @@ import router from "@/router";
 import store from "@/store";
 import { ADD_ERROR, PURGE_AUTH } from "@/store/mutations.type";
 import authService from "./auth.service";
+import eventBus from "@/eventBus";
 
 // Host should be set explicitly to `hostname` because thrift will use
 // the value of `window.location.host` which will contain port number by
@@ -19,8 +19,6 @@ const port = parseInt(process.env.CC_SERVER_PORT, 10) ||
   parseInt(window.location.port, 10);
 const api = process.env.CC_API_VERSION;
 
-const eventHub = new Vue();
-
 class BaseService {
   constructor(serviceName, serviceClass) {
     this._serviceName = serviceName;
@@ -28,7 +26,7 @@ class BaseService {
     this._client = this.createClient();
 
     // Event which can be used to update client on route changes.
-    eventHub.$on("update", endpoint => {
+    eventBus.on("update", endpoint => {
       this._client = this.createClient(endpoint);
     });
   }
@@ -118,7 +116,6 @@ const handleThriftError = function (cb, onError) {
 };
 
 export {
-  eventHub,
   handleThriftError,
   BaseService
 };

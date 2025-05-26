@@ -16,7 +16,9 @@
 <script>
 import { BaseFilterMixin } from "./Filters";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "ClearAllFilters",
   mixins: [ BaseFilterMixin ],
 

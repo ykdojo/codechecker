@@ -29,7 +29,9 @@ import { ccService } from "@cc-api";
 
 import SelectSameReportItem from "./SelectSameReportItem";
 
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "SelectSameReport",
   components: {
     SelectSameReportItem
@@ -85,12 +87,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-select__selections input {
+:deep(.v-select__selections input) {
   display: none;
 }
 
 .v-select.v-text-field--outlined {
-  ::v-deep .theme--light.v-label {
+  :deep(.theme--light.v-label) {
     background-color: #fff;
   }
 }

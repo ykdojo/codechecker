@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Vue from "vue";
+import eventBus from "@/eventBus";
 import { Pane, Splitpanes } from "splitpanes";
 import { mapState } from "vuex";
 
@@ -112,7 +112,7 @@ export default {
       showCompareTo: true,
       tab: null,
       tabs: tabs,
-      bus: new Vue(),
+      bus: eventBus,
 
       // Map the tab link names to boolean values. If the value of a key is
       // true, it means that on the next tab change the tab needs to be
@@ -179,7 +179,7 @@ export default {
      * Refresh the current statistics tab.
      */
     refreshCurrentTab() {
-      this.bus.$emit("refresh");
+      this.bus.emit("refresh");
 
       const resolve = this.$router.resolve(this.tab);
       this.refreshTabs[resolve.route.name] = false;

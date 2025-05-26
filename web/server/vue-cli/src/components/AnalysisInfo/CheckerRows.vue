@@ -1,7 +1,5 @@
-<template>
-  <v-container
-    class="analysis-info-checker-rows-in-columns"
-  >
+<![CDATA[<template>
+  <v-container class="analysis-info-checker-rows-in-columns">
     <checker
       v-for="(checker, idx) in checkers"
       :key="idx"
@@ -11,22 +9,16 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import Checker from "./Checker";
 
-export default {
-  name: "CheckerRows",
-  components: {
-    Checker
-  },
-  props: {
-    checkers: { type: Array, required: true }
-  }
-};
+defineProps({
+  checkers: { type: Array, required: true }
+});
 </script>
 
 <style lang="scss" scoped>
 .analysis-info .analysis-info-checker-rows-in-columns {
   columns: 32em auto;
 }
-</style>
+</style>]]>

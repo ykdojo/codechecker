@@ -1,27 +1,24 @@
-import Vue from "vue";
-import Vuetify from "vuetify/lib";
+import { createVuetify } from "vuetify";
 
-Vue.use(Vuetify);
-
-const opts = {
-  iconfont: "mdi",
+export default createVuetify({
   theme: {
-    options: {
-      customProperties: true,
-    },
+    defaultTheme: "light",
     themes: {
       light: {
-        primary: "#2280c3",
-        secondary: "#2c87c7",
-        accent: "#009688",
-        error: "#f44336",
-        warning: "#ff9800",
-        info: "#3f51b5",
-        success: "#4caf50",
-        grey: "#9E9E9E"
+        colors: {
+          primary: "#2280c3",
+          secondary: "#2c87c7",
+          accent: "#009688",
+          error: "#f44336",
+          warning: "#ff9800",
+          info: "#3f51b5",
+          success: "#4caf50",
+          grey: "#9E9E9E"
+        }
       }
-    },
+    }
+  },
+  icons: {
+    defaultSet: "mdi"
   }
-};
-
-export default new Vuetify(opts);
+});

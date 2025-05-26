@@ -1,11 +1,190 @@
+<script setup>
+import { ref, defineEmits } from 'vue';
+import {
+  CompareData,
+  DiffType,
+  ReportFilter,
+  ReviewStatus
+} from "@cc/report-server-types";
+import { useToCSV } from "@/mixins";
+import {
+  BaseStatistics,
+  UniqueStatWarning,
+  getComponents,
+  initDiffField
+} from "@/components/Statistics";
+import {
+  getComponentStatistics
+} from "@/components/Statistics/StatisticsHelper";
+import ComponentStatisticsTable from "./ComponentStatisticsTable";
+
+const props = defineProps({
+  bus: { type: Object, required: true },
+  namespace: { type: String, required: true }
+});
+
+const emit = defineEmits(['update:modelValue']);
+const { toCSV } = useToCSV();
+const loading = ref(false);
+const statistics = ref([]);
+const components = ref([]);
+const statisticsFilters = ref({});
+
+const fieldsToUpdate = [
+  "reports", "unreviewed", "confirmed",
+  "falsePositive", "intentional"
+];
+
+const downloadCSV = () => {
+  const data = [
+    [
+      "Component", "Unreviewed", "Confirmed bug",
+      "Outstanding reports (Unreviewed + Confirmed)", "False positive",
+      "Intentional", "Suppressed reports (False positive + Intentional)",
+      "All reports"
+    ],
+    ...statistics.value.map(stat => {
+      return [
+        stat.component, stat.unreviewed.count, stat.confirmed.count,
+        stat.outstanding.count, stat.falsePositive.count,
+        stat.intentional.count, stat.suppressed.count, stat.reports.count
+      ];
+    })
+  ];
+
+  toCSV(data, "codechecker_component_statistics.csv");
+};
+
+const initStatistics = (componentList) => {
+  statistics.value = componentList.map(component => ({
+    component: component.name,
+    value: component.value || component.description,
+    reports: initDiffField(undefined),
+    unreviewed: initDiffField(undefined),
+    confirmed: initDiffField(undefined),
+    outstanding: initDiffField(undefined),
+    falsePositive: initDiffField(undefined),
+    intentional: initDiffField(undefined),
+    suppressed: initDiffField(undefined)
+  }));
+};
+
+const getStatisticsForComponent = async (component, runIds, reportFilter, cmpData) => {
+  const res = await getComponentStatistics(component, runIds, reportFilter,
+    cmpData);
+
+  return {
+    component: component.name,
+    value: component.value || component.description,
+    reports: initDiffField(res.reports),
+    unreviewed: initDiffField(res.unreviewed),
+    confirmed: initDiffField(res.confirmed),
+    outstanding: initDiffField(res.outstanding),
+    falsePositive: initDiffField(res.falsePositive),
+    intentional: initDiffField(res.intentional),
+    suppressed: initDiffField(res.suppressed)
+  };
+};
+
+const getNewReports = async (component) => {
+  const { runIds, reportFilter, cmpData: baseCmpData } = BaseStatistics.methods.getStatisticsFilters();
+
+  const modifiedReportFilter = new ReportFilter(reportFilter);
+  modifiedReportFilter["componentNames"] = [component.name];
+
+  const modifiedCmpData = new CompareData(baseCmpData);
+  modifiedCmpData.diffType = DiffType.NEW;
+
+  return getStatisticsForComponent(component, runIds, modifiedReportFilter, modifiedCmpData);
+};
+
+const getResolvedReports = async (component) => {
+  const { runIds, reportFilter, cmpData: baseCmpData } = BaseStatistics.methods.getStatisticsFilters();
+
+  const modifiedReportFilter = new ReportFilter(reportFilter);
+  modifiedReportFilter["componentNames"] = [component.name];
+
+  const modifiedCmpData = new CompareData(baseCmpData);
+  modifiedCmpData.diffType = DiffType.RESOLVED;
+
+  return getStatisticsForComponent(component, runIds, modifiedReportFilter, modifiedCmpData);
+};
+
+const fetchDifference = async () => {
+  const cmpData = BaseStatistics.computed.cmpData.value;
+  if (!cmpData) return;
+
+  return Promise.all(components.value.map(component => {
+    const q1 = getNewReports(component).then(newReports => {
+      const row = statistics.value.find(s =>
+        s.component === component.name);
+
+      if (row) {
+        fieldsToUpdate.forEach(f => row[f].new = newReports[f].count);
+        BaseStatistics.methods.updateCalculatedFields(row, newReports, "new");
+      }
+    });
+
+    const q2 = getResolvedReports(component).then(resolvedReports => {
+      const row = statistics.value.find(s =>
+        s.component === component.name);
+
+      if (row) {
+        fieldsToUpdate.forEach(f =>
+          row[f].resolved = resolvedReports[f].count);
+        BaseStatistics.methods.updateCalculatedFields(row, resolvedReports, "resolved");
+      }
+    });
+
+    return Promise.all([q1, q2]);
+  }));
+};
+
+const fetchStatistics = async () => {
+  loading.value = true;
+  statistics.value = [];
+
+  components.value = await getComponents();
+  initStatistics(components.value);
+
+  statisticsFilters.value = BaseStatistics.methods.getStatisticsFilters();
+  const { runIds, reportFilter, cmpData } = statisticsFilters.value;
+
+  const queries = components.value.map(async component => {
+    const res = await getStatisticsForComponent(component, runIds, reportFilter,
+      cmpData);
+
+    const idx = statistics.value.findIndex(s =>
+      s.component === component.name);
+
+    statistics.value[idx] = {
+      ...res,
+      loading: false,
+      checkerStatistics: null
+    };
+
+    statistics.value = [...statistics.value];
+
+    return statistics.value[idx];
+  });
+
+  await Promise.all(queries).then(stats =>
+    statistics.value = stats);
+
+  await fetchDifference();
+
+  loading.value = false;
+};
+</script>
+
 <template>
   <v-container fluid>
     <v-row>
       <v-col>
-        <h3 class="title primary--text mb-2">
+        <h3 class="title text-primary mb-2">
           <v-btn
             color="primary"
-            outlined
+            variant="outlined"
             @click="downloadCSV"
           >
             Export CSV
@@ -33,196 +212,8 @@
   </v-container>
 </template>
 
-<script>
-import {
-  CompareData,
-  DiffType,
-  ReportFilter,
-  ReviewStatus
-} from "@cc/report-server-types";
-import { ToCSV } from "@/mixins";
-
-import {
-  BaseStatistics,
-  UniqueStatWarning,
-  getComponents,
-  initDiffField
-} from "@/components/Statistics";
-import {
-  getComponentStatistics
-} from "@/components/Statistics/StatisticsHelper";
-
-import ComponentStatisticsTable from "./ComponentStatisticsTable";
-
-export default {
-  name: "ComponentStatistics",
-  components: {
-    ComponentStatisticsTable, UniqueStatWarning
-  },
-  mixins: [ BaseStatistics, ToCSV ],
-
-  data() {
-    return {
-      ReviewStatus,
-      loading: false,
-      statistics: [],
-      components: [],
-      statisticsFilters: {},
-      fieldsToUpdate: [ "reports", "unreviewed", "confirmed",
-        "falsePositive", "intentional" ]
-    };
-  },
-
-  methods: {
-    downloadCSV() {
-      const data = [
-        [
-          "Component", "Unreviewed", "Confirmed bug",
-          "Outstanding reports (Unreviewed + Confirmed)", "False positive",
-          "Intentional", "Suppressed reports (False positive + Intentional)",
-          "All reports"
-        ],
-        ...this.statistics.map(stat => {
-          return [
-            stat.component, stat.unreviewed.count, stat.confirmed.count,
-            stat.outstanding.count, stat.falsePositive.count,
-            stat.intentional.count, stat.suppressed.count, stat.reports.count
-          ];
-        })
-      ];
-
-      this.toCSV(data, "codechecker_component_statistics.csv");
-    },
-
-    /**
-     * If compare data is set this function will get the number of new and
-     * resolved bugs and update the statistics.
-     */
-    async fetchDifference() {
-      if (!this.cmpData) return;
-
-      return Promise.all(this.components.map(component => {
-        const q1 = this.getNewReports(component).then(newReports => {
-          const row = this.statistics.find(s =>
-            s.component === component.name);
-
-          if (row) {
-            this.fieldsToUpdate.forEach(f => row[f].new = newReports[f].count);
-            this.updateCalculatedFields(row, newReports, "new");
-          }
-        });
-
-        const q2 = this.getResolvedReports(component).then(resolvedReports => {
-          const row = this.statistics.find(s =>
-            s.component === component.name);
-
-          if (row) {
-            this.fieldsToUpdate.forEach(f =>
-              row[f].resolved = resolvedReports[f].count);
-            this.updateCalculatedFields(row, resolvedReports, "resolved");
-          }
-        });
-
-        return Promise.all([ q1, q2 ]);
-      }));
-    },
-
-    getNewReports(component) {
-      const runIds = this.runIds;
-
-      const reportFilter = new ReportFilter(this.reportFilter);
-      reportFilter["componentNames"] = [ component.name ];
-
-      const cmpData = new CompareData(this.cmpData);
-      cmpData.diffType = DiffType.NEW;
-
-      return this.getStatistics(component, runIds, reportFilter, cmpData);
-    },
-
-    getResolvedReports(component) {
-      const runIds = this.runIds;
-
-      const reportFilter = new ReportFilter(this.reportFilter);
-      reportFilter["componentNames"] = [ component.name ];
-
-      const cmpData = new CompareData(this.cmpData);
-      cmpData.diffType = DiffType.RESOLVED;
-
-      return this.getStatistics(component, runIds, reportFilter, cmpData);
-    },
-
-    initStatistics(components) {
-      this.statistics = components.map(component => ({
-        component     : component.name,
-        value         : component.value || component.description,
-        reports       : initDiffField(undefined),
-        unreviewed    : initDiffField(undefined),
-        confirmed     : initDiffField(undefined),
-        outstanding   : initDiffField(undefined),
-        falsePositive : initDiffField(undefined),
-        intentional   : initDiffField(undefined),
-        suppressed    : initDiffField(undefined)
-      }));
-    },
-
-    async getStatistics(component, runIds, reportFilter, cmpData) {
-      const res = await getComponentStatistics(component, runIds, reportFilter,
-        cmpData);
-
-      return {
-        component     : component.name,
-        value         : component.value || component.description,
-        reports       : initDiffField(res.reports),
-        unreviewed    : initDiffField(res.unreviewed),
-        confirmed     : initDiffField(res.confirmed),
-        outstanding   : initDiffField(res.outstanding),
-        falsePositive : initDiffField(res.falsePositive),
-        intentional   : initDiffField(res.intentional),
-        suppressed    : initDiffField(res.suppressed)
-      };
-    },
-
-    async fetchStatistics() {
-      this.loading = true;
-      this.statistics = [];
-
-      this.components = await getComponents();
-      this.initStatistics(this.components);
-
-      this.statisticsFilters = this.getStatisticsFilters();
-      const { runIds, reportFilter, cmpData } = this.statisticsFilters;
-
-      const queries = this.components.map(async component => {
-        const res = await this.getStatistics(component, runIds, reportFilter,
-          cmpData);
-
-        const idx = this.statistics.findIndex(s =>
-          s.component === component.name);
-
-        this.statistics[idx] = {
-          ...res,
-          loading       : false,
-          checkerStatistics: null
-        };
-
-        this.statistics = [ ...this.statistics ];
-
-        return this.statistics[idx];
-      });
-
-      await Promise.all(queries).then(statistics =>
-        this.statistics = statistics);
-
-      await this.fetchDifference();
-
-      this.loading = false;
-    }
-  }
-};
-</script>
-
 <style lang="scss" scoped>
-::v-deep .v-data-table__expanded__content .v-card {
+:deep(.v-data-table__expanded__content .v-card) {
   padding: 10px;
 }
 </style>

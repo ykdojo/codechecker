@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-tabs v-model="tab">
+    <v-tabs v-model="tabValue">
       <v-tab
         v-for="item in ['Open', 'Closed']"
         :key="item"
@@ -10,7 +10,7 @@
       </v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tabValue">
       <v-tab-item>
         <slot name="open" />
       </v-tab-item>
@@ -22,21 +22,17 @@
   </v-container>
 </template>
 
-<script>
-export default {
-  name: "CleanupPlanTab",
-  props: {
-    value: { type: Number, default: null }
-  },
-  computed: {
-    tab: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit("input", val);
-      }
-    }
-  }
-};
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  value: { type: Number, default: null }
+});
+
+const emit = defineEmits(['input']);
+
+const tabValue = computed({
+  get: () => props.value,
+  set: (val) => emit('input', val)
+});
 </script>

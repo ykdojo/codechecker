@@ -18,7 +18,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 Chart.plugins.unregister(ChartDataLabels);
 
-import Vue from "vue";
+import { createApp } from "vue";
 import vuetify from "@/plugins/vuetify";
 
 import {
@@ -32,14 +32,9 @@ import convertOldUrlToNew from "./router/backward-compatible-url";
 import router from "./router";
 import store from "./store";
 import filters from "./filters";
-
-Vue.use(filters);
-
 import App from "./App.vue";
 
 import { eventHub } from "@cc-api";
-
-Vue.config.productionTip = false;
 
 let isFirstRouterResolve = true;
 
@@ -103,9 +98,13 @@ router.afterEach(to => {
   store.commit(SET_QUERIES, { location: query_namespace, query: to.query });
 });
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App),
-}).$mount("#app");
+const app = createApp(App);
+
+app.use(router);
+app.use(store);
+app.use(vuetify);
+app.use(filters);
+
+app.config.productionTip = false;
+
+app.mount("#app");

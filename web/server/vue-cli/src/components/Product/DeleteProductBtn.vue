@@ -2,27 +2,26 @@
   <confirm-dialog
     v-model="dialog"
     max-width="600px"
-    cancel-btn-color="primary"
-    confirm-btn-label="Remove"
-    confirm-btn-color="error"
+    :cancel-btn-props="{ color: 'primary' }"
+    :confirm-btn-props="{ label: 'Remove', color: 'error' }"
     @confirm="confirmDelete"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ props }">
       <v-btn
         class="remove-btn"
         icon
         color="error"
-        v-on="on"
+        v-bind="props"
       >
         <v-icon>mdi-trash-can-outline</v-icon>
       </v-btn>
     </template>
 
-    <template v-slot:title>
+    <template #title>
       Confirm deletion of product
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <p>
         You have selected to delete <b>{{ product.endpoint }}</b>
         product!
@@ -40,10 +39,11 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 import { handleThriftError, prodService } from "@cc-api";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
-export default {
+export default defineComponent({
   name: "DeleteProductBtn",
   components: {
     ConfirmDialog
@@ -51,13 +51,12 @@ export default {
   props: {
     product: { type: Object, required: true }
   },
-
+  emits: ['on-complete'],
   data() {
     return {
       dialog: false
     };
   },
-
   methods: {
     confirmDelete() {
       prodService.getClient().removeProduct(this.product.id,
@@ -68,5 +67,5 @@ export default {
         }));
     }
   }
-};
+});
 </script>

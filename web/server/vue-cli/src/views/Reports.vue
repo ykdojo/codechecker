@@ -10,7 +10,7 @@
     </pane>
     <pane>
       <checker-documentation-dialog
-        :value.sync="checkerDocDialog"
+        v-model="checkerDocDialog"
         :checker="selectedChecker"
       />
 
@@ -19,13 +19,13 @@
         v-fill-height
         :headers="tableHeaders"
         :items="formattedReports"
-        :options.sync="pagination"
+        v-model:options="pagination"
         :loading="loading"
         loading-text="Loading reports..."
-        :server-items-length.sync="totalItems"
+        v-model:server-items-length="totalItems"
         :footer-props="footerProps"
         :must-sort="true"
-        :expanded.sync="expanded"
+        v-model:expanded="expanded"
         show-expand
         show-select
         :mobile-breakpoint="1100"
@@ -68,9 +68,9 @@
                       />
                       <router-link
                         :to="{ name: 'report-detail', query: {
-                          ...$router.currentRoute.query,
-                          'report-id': report.reportId,
-                          'report-hash': undefined
+                        ...this.$route.query,
+                        'report-id': report.reportId,
+                        'report-hash': undefined
                         }}"
                       >
                         {{ report.checkedFile }}:{{ report.line }}
@@ -99,14 +99,14 @@
 
         <template #item.bugHash="{ item }">
           <span :title="item.bugHash">
-            {{ item.bugHash | truncate(10) }}
+            {{ truncate(item.bugHash, 10) }}
           </span>
         </template>
 
         <template #item.checkedFile="{ item }">
           <router-link
             :to="{ name: 'report-detail', query: {
-              ...$router.currentRoute.query,
+              ...this.$route.query,
               'report-id': item.reportId ? item.reportId : undefined,
               'report-hash': item.bugHash,
               'report-filepath': reportFilter.isUnique
@@ -169,6 +169,7 @@
 
 <script>
 import { Pane, Splitpanes } from "splitpanes";
+import { prettifyDate, truncate } from "@/utils";
 
 import { mapGetters } from "vuex";
 
@@ -208,12 +209,12 @@ export default {
   data() {
     const itemsPerPageOptions = [ 25, 50, 100 ];
 
-    const page = parseInt(this.$router.currentRoute.query["page"]) || 1;
+    const page = parseInt(this.$route.query["page"]) || 1;
     const itemsPerPage =
-      parseInt(this.$router.currentRoute.query["items-per-page"]) ||
+      parseInt(this.$route.query["items-per-page"]) ||
       itemsPerPageOptions[0];
-    const sortBy = this.$router.currentRoute.query["sort-by"];
-    const sortDesc = this.$router.currentRoute.query["sort-desc"];
+    const sortBy = this.$route.query["sort-by"];
+    const sortDesc = this.$route.query["sort-desc"];
 
     return {
       headers: [
@@ -360,9 +361,9 @@ export default {
         const detectionStatus =
           this.detectionStatusFromCodeToString(report.detectionStatus);
         const detectedAt = report.detectedAt
-          ? this.$options.filters.prettifyDate(report.detectedAt) : null;
+          ? prettifyDate(report.detectedAt) : null;
         const fixedAt = report.fixedAt
-          ? this.$options.filters.prettifyDate(report.fixedAt) : null;
+          ? prettifyDate(report.fixedAt) : null;
 
         const detectionStatusTitle = [
           `Status: ${detectionStatus}`,
@@ -518,9 +519,7 @@ export default {
 
           reports.forEach(report => {
             ccService.getSameReports(report.bugHash).then(sameReports => {
-              this.$set(
-                this.sameReports, report.bugHash,
-                [ ...new Set(sameReports.map(r => r.reviewData.status)) ]);
+              this.sameReports[report.bugHash] = [ ...new Set(sameReports.map(r => r.reviewData.status)) ];
             });
           });
         }));

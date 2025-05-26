@@ -3,7 +3,7 @@
     <v-row>
       <v-col align-self="center">
         <v-text-field
-          :value="runName"
+          v-model="localRunName"
           class="run-name"
           prepend-inner-icon="mdi-magnify"
           label="Search for runs..."
@@ -13,13 +13,13 @@
           solo
           flat
           dense
-          @input="setRunName"
+          @update:model-value="setRunName"
         />
       </v-col>
 
       <v-col align-self="center">
         <v-text-field
-          :value="runTag"
+          v-model="localRunTag"
           class="run-tag"
           prepend-inner-icon="mdi-tag"
           label="Filter events by tag name..."
@@ -30,7 +30,7 @@
           solo
           flat
           dense
-          @input="setRunTag"
+          @update:model-value="setRunTag"
         >
           <template #append>
             <tooltip-help-icon>
@@ -43,14 +43,14 @@
 
       <v-col align-self="center" width="50px">
         <date-time-picker
-          :value="storedAfter"
+          v-model="localStoredAfter"
           input-class="stored-after"
           dialog-class="stored-after"
           label="History stored after..."
           prepend-inner-icon="mdi-calendar-arrow-right"
           outlined
           dense
-          @input="setStoredAfter"
+          @update:model-value="setStoredAfter"
         >
           <template #append>
             <tooltip-help-icon>
@@ -64,14 +64,14 @@
 
       <v-col align-self="center" cols="2">
         <date-time-picker
-          :value="storedBefore"
+          v-model="localStoredBefore"
           input-class="stored-before"
           dialog-class="stored-before"
           label="History stored before..."
           prepend-inner-icon="mdi-calendar-arrow-left"
           outlined
           dense
-          @input="setStoredBefore"
+          @update:model-value="setStoredBefore"
         >
           <template #append>
             <tooltip-help-icon>
@@ -133,8 +133,10 @@
 </template>
 
 <script>
+import { defineComponent, computed, ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router';
 import _ from "lodash";
-import { mapGetters, mapMutations } from "vuex";
 import {
   SET_RUN_HISTORY_RUN_TAG,
   SET_RUN_HISTORY_STORED_AFTER,
@@ -147,7 +149,7 @@ import DateTimePicker from "@/components/DateTimePicker";
 import TooltipHelpIcon from "@/components/TooltipHelpIcon";
 import { DeleteRunBtn } from "@/components/Run";
 
-export default {
+export default defineComponent({
   name: "RunFilter",
   components: {
     DateTimePicker,
@@ -163,115 +165,124 @@ export default {
     selectedComparedToTags: { type: Array, required: true }
   },
 
-  computed: {
-    ...mapGetters("run", [
-      "runName",
-      "runTag",
-      "storedBefore",
-      "storedAfter",
-    ]),
+  setup(props, { emit }) {
+    const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
 
-    isDiffBtnDisabled() {
-      return (!this.selectedBaselineRuns.length &&
-              !this.selectedBaselineTags.length) ||
-             (!this.selectedComparedToRuns.length &&
-              !this.selectedComparedToTags.length);
-    },
+    const localRunName = ref(store.getters['run/runName']);
+    const localRunTag = ref(store.getters['run/runTag']);
+    const localStoredBefore = ref(store.getters['run/storedBefore']);
+    const localStoredAfter = ref(store.getters['run/storedAfter']);
 
-    diffTargetRoute() {
+    const isDiffBtnDisabled = computed(() => {
+      return (!props.selectedBaselineRuns.length &&
+              !props.selectedBaselineTags.length) ||
+             (!props.selectedComparedToRuns.length &&
+              !props.selectedComparedToTags.length);
+    });
+
+    const diffTargetRoute = computed(() => {
       return {
         name: "reports",
         query: {
-          ...this.$router.currentRoute.query,
-          "run": this.selectedBaselineRuns.length
-            ? this.selectedBaselineRuns : undefined,
-          "run-tag": this.selectedBaselineTags.length
-            ? this.selectedBaselineTags : undefined,
-          "newcheck": this.selectedComparedToRuns.length
-            ? this.selectedComparedToRuns : undefined,
-          "run-tag-newcheck": this.selectedComparedToTags.length
-            ? this.selectedComparedToTags : undefined,
+          ...route.query,
+          "run": props.selectedBaselineRuns.length
+            ? props.selectedBaselineRuns : undefined,
+          "run-tag": props.selectedBaselineTags.length
+            ? props.selectedBaselineTags : undefined,
+          "newcheck": props.selectedComparedToRuns.length
+            ? props.selectedComparedToRuns : undefined,
+          "run-tag-newcheck": props.selectedComparedToTags.length
+            ? props.selectedComparedToTags : undefined,
         }
       };
-    },
-  },
+    });
 
-  created() {
-    // Initalize the URLs.
-    this.initByUrl();
+    const initByUrl = () => {
+      const runName = route.query["run"];
+      if (runName) {
+        store.commit(`run/${SET_RUN_NAME}`, runName);
+        localRunName.value = runName;
+      }
 
-    // Watch for filter changes.
-    this.$watch("runName", _.debounce(() => {
-      const runName = this.runName ? this.runName : undefined;
-      this.updateUrl({ "run": runName });
+      const runTag = route.query["run-tag"];
+      if (runTag) {
+        store.commit(`run/${SET_RUN_HISTORY_RUN_TAG}`, runTag);
+        localRunTag.value = runTag;
+      }
 
-      this.$emit("on-run-filter-changed");
-    }, 500));
+      const storedAfter = route.query["stored-after"];
+      if (storedAfter) {
+        const date = new Date(storedAfter);
+        store.commit(`run/${SET_RUN_HISTORY_STORED_AFTER}`, date);
+        localStoredAfter.value = date;
+      }
 
-    this.$watch("runTag", _.debounce(() => {
-      const runTag = this.runTag ? this.runTag : undefined;
-      this.updateUrl({ "run-tag": runTag });
+      const storedBefore = route.query["stored-before"];
+      if (storedBefore) {
+        const date = new Date(storedBefore);
+        store.commit(`run/${SET_RUN_HISTORY_STORED_BEFORE}`, date);
+        localStoredBefore.value = date;
+      }
+    };
 
-      this.$emit("on-run-history-filter-changed");
-    }, 500));
-
-    this.$watch("storedAfter", _.debounce(() => {
-      const date = this.storedAfter
-        ? this.dateTimeToStr(this.storedAfter) : undefined;
-      this.updateUrl({ "stored-after": date });
-
-      this.$emit("on-run-filter-changed");
-      this.$emit("on-run-history-filter-changed");
-    }, 500));
-
-    this.$watch("storedBefore", _.debounce(() => {
-      const date = this.storedBefore
-        ? this.dateTimeToStr(this.storedBefore) : undefined;
-      this.updateUrl({ "stored-before": date });
-
-      this.$emit("on-run-filter-changed");
-      this.$emit("on-run-history-filter-changed");
-    }, 500));
-  },
-
-  methods: {
-    ...mapMutations("run", [
-      SET_RUN_NAME,
-      SET_RUN_HISTORY_RUN_TAG,
-      SET_RUN_HISTORY_STORED_BEFORE,
-      SET_RUN_HISTORY_STORED_AFTER
-    ]),
-
-    initByUrl() {
-      const runName = this.$router.currentRoute.query["run"];
-      if (runName)
-        this.setRunName(runName);
-
-      const runTag = this.$router.currentRoute.query["run-tag"];
-      if (runTag)
-        this.setRunTag(runTag);
-
-      const storedAfter = this.$router.currentRoute.query["stored-after"];
-      if (storedAfter)
-        this.setStoredAfter(new Date(storedAfter));
-
-      const storedBefore = this.$router.currentRoute.query["stored-before"];
-      if (storedBefore)
-        this.setStoredBefore(new Date(storedBefore));
-    },
-
-    updateUrl(params) {
-      this.$router.replace({
+    const updateUrl = (params) => {
+      router.replace({
         query: {
-          ...this.$route.query,
+          ...route.query,
           ...params
         }
       }).catch(() => {});
-    },
+    };
 
-    update() {
-      this.$emit("update");
-    }
+    const update = () => {
+      emit("update");
+    };
+
+    // Initialize from URL
+    initByUrl();
+
+    // Watch for changes with debounce
+    watch(localRunName, _.debounce((newVal) => {
+      const runName = newVal || undefined;
+      updateUrl({ "run": runName });
+      store.commit(`run/${SET_RUN_NAME}`, runName);
+      emit("on-run-filter-changed");
+    }, 500));
+
+    watch(localRunTag, _.debounce((newVal) => {
+      const runTag = newVal || undefined;
+      updateUrl({ "run-tag": runTag });
+      store.commit(`run/${SET_RUN_HISTORY_RUN_TAG}`, runTag);
+      emit("on-run-history-filter-changed");
+    }, 500));
+
+    watch(localStoredAfter, _.debounce((newVal) => {
+      const date = newVal ? DateMixin.methods.dateTimeToStr(newVal) : undefined;
+      updateUrl({ "stored-after": date });
+      store.commit(`run/${SET_RUN_HISTORY_STORED_AFTER}`, newVal);
+      emit("on-run-filter-changed");
+      emit("on-run-history-filter-changed");
+    }, 500));
+
+    watch(localStoredBefore, _.debounce((newVal) => {
+      const date = newVal ? DateMixin.methods.dateTimeToStr(newVal) : undefined;
+      updateUrl({ "stored-before": date });
+      store.commit(`run/${SET_RUN_HISTORY_STORED_BEFORE}`, newVal);
+      emit("on-run-filter-changed");
+      emit("on-run-history-filter-changed");
+    }, 500));
+
+    return {
+      localRunName,
+      localRunTag,
+      localStoredBefore,
+      localStoredAfter,
+      isDiffBtnDisabled,
+      diffTargetRoute,
+      update
+    };
   }
-};
+});
 </script>

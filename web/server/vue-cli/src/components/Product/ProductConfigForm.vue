@@ -30,27 +30,23 @@
 
     <v-text-field
       v-if="isSuperUser"
-      :value="productConfig.runLimit"
+      v-model="productConfig.runLimit"
       type="number"
       label="Run limit"
       name="run-limit"
       prepend-icon="mdi-speedometer"
       :rules="rules.runLimit"
-      @input="productConfig.runLimit = $event || null"
     />
 
-    <v-row
-      class="ma-0"
-    >
+    <v-row class="ma-0">
       <v-text-field
         v-if="isSuperUser"
-        :value="productConfig.reportLimit"
+        v-model="productConfig.reportLimit"
         type="number"
         label="Report limit"
         name="report-limit"
         prepend-icon="mdi-close-octagon"
         :rules="rules.runLimit"
-        @input="productConfig.reportLimit = $event || null"
       />
 
       <tooltip-help-icon>
@@ -60,9 +56,7 @@
       </tooltip-help-icon>
     </v-row>
 
-    <v-row
-      class="ma-0"
-    >
+    <v-row class="ma-0">
       <v-select
         v-model="confidentialityString"
         label="Information Classification"
@@ -71,10 +65,10 @@
         name="confidentiality"
         :items="confidentialityItems"
       >
-        <template v-slot:selection="{ item }">
+        <template #selection="{ item }">
           <select-confidentiality-item :value="item" />
         </template>
-        <template v-slot:item="{ item }">
+        <template #item="{ item }">
           <select-confidentiality-item :value="item" />
         </template>
       </v-select>
@@ -90,9 +84,7 @@
       name="disable-review-status-change"
     />
 
-    <div
-      v-if="isSuperUser"
-    >
+    <div v-if="isSuperUser">
       <v-divider />
 
       <v-radio-group
@@ -110,9 +102,7 @@
         />
       </v-radio-group>
 
-      <div
-        v-if="dbConnection.engine == 'sqlite'"
-      >
+      <div v-if="dbConnection.engine === 'sqlite'">
         <v-text-field
           v-model="dbConnection.database"
           label="Database file*"
@@ -122,9 +112,7 @@
         />
       </div>
 
-      <div
-        v-if="dbConnection.engine == 'postgresql'"
-      >
+      <div v-if="dbConnection.engine === 'postgresql'">
         <v-text-field
           v-model="dbConnection.host"
           label="Server address*"
@@ -175,15 +163,17 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 import TooltipHelpIcon from "@/components/TooltipHelpIcon";
 import SelectConfidentialityItem from "./SelectConfidentialityItem.vue";
 import { ConfidentialityMixin } from "@/mixins";
 import { Confidentiality } from "@cc/prod-types";
 
-export default {
+export default defineComponent({
   name: "EditProduct",
   components: {
-    TooltipHelpIcon, SelectConfidentialityItem
+    TooltipHelpIcon,
+    SelectConfidentialityItem
   },
   mixins: [ ConfidentialityMixin ],
   props: {
@@ -191,6 +181,7 @@ export default {
     isValid: { type: Boolean, default: false },
     isSuperUser: { type: Boolean, default: false }
   },
+  emits: ['update:is-valid'],
   data() {
     return {
       rules: {
@@ -216,20 +207,18 @@ export default {
           v => !!v || "Engine is required"
         ],
         runLimit: [
-          v => (!v || !!v && !isNaN(parseInt(v))) || "Number is required"
+          v => (!v || (!!v && !isNaN(parseInt(v)))) || "Number is required"
         ],
         reportLimit: [
-          v => (!v || !!v && !isNaN(parseInt(v))) || "Number is required"
+          v => (!v || (!!v && !isNaN(parseInt(v)))) || "Number is required"
         ]
       },
     };
   },
-
   computed: {
     confidentialityItems() {
       return this.confidentialities();
     },
-
     confidentialityString: {
       get() {
         return this.confidentialityFromCodeToString(
@@ -241,7 +230,6 @@ export default {
           this.confidentialityFromStringToCode(value);
       }
     },
-
     valid: {
       get() {
         return this.isValid;
@@ -250,15 +238,12 @@ export default {
         this.$emit("update:is-valid", value);
       }
     },
-
     dbConnection() {
       return this.productConfig.connection;
     },
-
     dbUserName: {
       get() {
         if (!this.productConfig.connection.username_b64) return "";
-
         return window.atob(this.productConfig.connection.username_b64);
       },
       set(value) {
@@ -266,11 +251,9 @@ export default {
           value.length ? window.btoa(value) : null;
       }
     },
-
     dbPassword: {
       get() {
         if (!this.productConfig.connection.password_b64) return "";
-
         return window.atob(this.productConfig.connection.password_b64);
       },
       set(value) {
@@ -278,11 +261,9 @@ export default {
           value.length ? window.btoa(value) : null;
       }
     },
-
     description: {
       get() {
         if (!this.productConfig.description_b64) return "";
-
         return window.atob(this.productConfig.description_b64);
       },
       set(value) {
@@ -290,11 +271,9 @@ export default {
           value.length ? window.btoa(value) : null;
       }
     },
-
     displayName: {
       get() {
         if (!this.productConfig.displayedName_b64) return "";
-
         return window.atob(this.productConfig.displayedName_b64);
       },
       set(value) {
@@ -303,8 +282,7 @@ export default {
       }
     },
   },
-
-  created () {
+  created() {
     if (!this.productConfig.confidentiality) {
       this.productConfig.confidentiality = Confidentiality.CONFIDENTIAL;
     }
@@ -314,5 +292,5 @@ export default {
       return this.$refs.form.validate();
     }
   }
-};
+});
 </script>

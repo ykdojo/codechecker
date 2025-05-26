@@ -269,7 +269,7 @@
 </template>
 
 <script>
-import Vue from "vue";
+import eventBus from "@/eventBus";
 
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
@@ -317,7 +317,6 @@ import SelectSameReport from "./SelectSameReport";
 import { ReportInfoButton, ShowReportInfoDialog } from "./ReportInfo";
 
 import ReportStepMessage from "./ReportStepMessage";
-const ReportStepMessageClass = Vue.extend(ReportStepMessage);
 
 export default {
   name: "Report",
@@ -360,7 +359,7 @@ export default {
       showComments: false,
       commentCols: 3,
       loading: true,
-      bus: new Vue(),
+      bus: eventBus,
       annotation: null,
       selectedChecker: null,
       analysisInfoDialog: false,
@@ -467,7 +466,7 @@ export default {
       this.init(this.treeItem);
     }
 
-    this.bus.$on("jpmToPrevReport", attrs => {
+    this.bus.on("jpmToPrevReport", attrs => {
       this.loadReportStep(this.report, {
         stepId: attrs.$id,
         fileId: attrs.fileId,
@@ -475,7 +474,7 @@ export default {
       });
     });
 
-    this.bus.$on("jpmToNextReport", attrs => {
+    this.bus.on("jpmToNextReport", attrs => {
       this.loadReportStep(this.report, {
         stepId: attrs.$id,
         fileId: attrs.fileId,
@@ -483,7 +482,7 @@ export default {
       });
     });
 
-    this.bus.$on("showDocumentation", () => {
+    this.bus.on("showDocumentation", () => {
       this.selectedChecker = new Checker({
         analyzerName: this.report.analyzerName,
         checkerId: this.report.checkerId

@@ -25,7 +25,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: 8080,
-    hot: true,
+    hot: 'only',
     historyApiFallback: {
       // If the URL contains a product endpoint and we server a static file
       // we will remove the rewrite the URL and remove the product endpoint
